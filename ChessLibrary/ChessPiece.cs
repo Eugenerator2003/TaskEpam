@@ -1,46 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChessClassLibrary
+namespace ChessLibrary
 {
-    public abstract class ChessPiece
+    public abstract class ChessPiece : ICloneable
     {
         public enum Color
         {
             White,
             Black 
         }
-
-        public enum Type
-        {
-            Pawn,
-            Knight,
-            Rook, 
-            Bishop,
-            Queen,
-            King
-        }
-
         public Color PieceColor { get; }
-
         public FieldCoordinate Coordinate
         {
-            get => Coordinate;
-            private protected set
-            {
-                Coordinate = value;
-            }
+            get; set;
         }
 
+        public int X { get => Coordinate.X; }
+        public int Y { get => Coordinate.Y; }
         public abstract bool CanMove(FieldCoordinate coordinate);
         public abstract bool MoveTo(FieldCoordinate coordinate);
         public abstract bool CanMoveThrough(ChessPiece piece, FieldCoordinate coordinate);
+
+        private protected bool ValidCoordinate(FieldCoordinate coordinate)
+        {
+            if (coordinate.X < 1 || coordinate.X > 8 || coordinate.Y < 1 || coordinate.Y > 8)
+                return false;
+            return true;
+        }
 
         public ChessPiece(FieldCoordinate coordinate, Color color)
         {
             this.Coordinate = coordinate;
             this.PieceColor = color;
         }
+
+
+        public abstract object Clone();
 
         public override string ToString()
         {

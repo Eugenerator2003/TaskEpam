@@ -1,11 +1,13 @@
 ﻿using System;
 
-namespace ChessClassLibrary.ChessPieces
+namespace ChessLibrary.ChessPieces
 {
     public class Knight : ChessPiece
     {
         public override bool CanMove(FieldCoordinate coordinate)
         {
+            if (!ValidCoordinate(coordinate))
+                return false;
             bool result = false;
             if (((coordinate.X == this.Coordinate.X - 2 || coordinate.X == this.Coordinate.X + 2)
                 && (coordinate.Y == this.Coordinate.Y - 1 || coordinate.Y == this.Coordinate.Y + 1))
@@ -35,6 +37,16 @@ namespace ChessClassLibrary.ChessPieces
         public Knight(FieldCoordinate coordinate, Color color) : base(coordinate, color)
         {
 
+        }
+
+        public override string ToString()
+        {
+            return "N" + base.ToString();
+        }
+
+        public override object Clone()
+        {
+            return new Knight(this.Coordinate, this.PieceColor);
         }
     }
 }

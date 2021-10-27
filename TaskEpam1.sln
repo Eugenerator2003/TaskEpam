@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessClassLibrary", "ChessLibrary\ChessClassLibrary.csproj", "{B213AD02-8962-4275-89B4-8D9E30DB9F74}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessGameClass", "ChessGameClass\ChessGameClass.csproj", "{CCFF55AE-4C4D-4F6D-A0FD-F748AFA7F970}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessLogger", "ChessLogger\ChessLogger.csproj", "{7D4F1F4B-22F2-4ED5-A464-CC611218B0F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessLibraryTests", "ChessGameClassTests\ChessLibraryTests.csproj", "{512FC364-8188-4026-B560-390AD2F00335}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{B213AD02-8962-4275-89B4-8D9E30DB9F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B213AD02-8962-4275-89B4-8D9E30DB9F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B213AD02-8962-4275-89B4-8D9E30DB9F74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCFF55AE-4C4D-4F6D-A0FD-F748AFA7F970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCFF55AE-4C4D-4F6D-A0FD-F748AFA7F970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCFF55AE-4C4D-4F6D-A0FD-F748AFA7F970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCFF55AE-4C4D-4F6D-A0FD-F748AFA7F970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4F1F4B-22F2-4ED5-A464-CC611218B0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4F1F4B-22F2-4ED5-A464-CC611218B0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4F1F4B-22F2-4ED5-A464-CC611218B0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4F1F4B-22F2-4ED5-A464-CC611218B0F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{512FC364-8188-4026-B560-390AD2F00335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{512FC364-8188-4026-B560-390AD2F00335}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{512FC364-8188-4026-B560-390AD2F00335}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{512FC364-8188-4026-B560-390AD2F00335}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
