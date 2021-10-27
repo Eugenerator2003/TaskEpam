@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\ChessLibrary.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,14 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChessBoard.cs" />
     <Compile Include="ChessPiece.cs" />
-    <Compile Include="ChessPieces\Bishop.cs" />
-    <Compile Include="ChessPieces\ChessPieceFabric.cs" />
-    <Compile Include="ChessPieces\King.cs" />
     <Compile Include="ChessPieces\Knightc.cs" />
-    <Compile Include="ChessPieces\Queen.cs" />
-    <Compile Include="ChessPieces\Rook.cs" />
     <Compile Include="FieldCoordinate.cs" />
     <Compile Include="ChessPieces\Pawn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
