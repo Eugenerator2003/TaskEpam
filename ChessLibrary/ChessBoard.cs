@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChessLibrary;
-using ChessLibrary.ChessPieces;
 
 namespace ChessLibrary
 { 
@@ -127,7 +126,6 @@ namespace ChessLibrary
                     _SetKing(king);
                     if (this.CheckTheCheck(isWhiteMoving, out ChessPiece temp, ref check))
                     {
-                        //Console.WriteLine($"{escapeCoordinates}");
                         isCanMoveFromCheck = true;
                     }
                     else
@@ -186,16 +184,14 @@ namespace ChessLibrary
                 }
             }
 
-            if (checkmate /*&& !(pieceBeating is Pawn)*/)
+            if (checkmate)
             {
                 List<FieldCoordinate> coordinateBetween = _GetFreeCoordinatesBetween(king.Coordinate, pieceBeating.Coordinate);
-                //foreach (ChessPiece piece in currentSet)
                 for (int i = 0; i < currentSet.Count; i++)
                 {
                     bool canMove = false;
                     foreach (FieldCoordinate coordinate in coordinateBetween)
                     {
-
                         ChessPiece pieceOld = (ChessPiece)currentSet[i].Clone();
                         if (this.CanMoveOnBoard(currentSet[i], coordinate) && currentSet[i] != king)
                         {

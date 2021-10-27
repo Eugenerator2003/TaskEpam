@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChessClassLibrary
+namespace ChessLibrary
 {
-    public abstract class ChessPiece
+    public abstract class ChessPiece : ICloneable
     {
         public enum Color
         {
@@ -23,13 +23,21 @@ namespace ChessClassLibrary
 
         public Color PieceColor { get; }
 
+
         public FieldCoordinate Coordinate
         {
-            get => Coordinate;
-            private protected set
-            {
-                Coordinate = value;
-            }
+            get;
+            private protected set;
+        }
+
+        public int X { get => Coordinate.X; }
+        public int Y { get => Coordinate.Y; }
+
+        private protected static bool ValidCoordinate(FieldCoordinate coordinate)
+        {
+            if (coordinate.X < 1 || coordinate.X > 8 || coordinate.Y < 1 || coordinate.Y > 8)
+                return false;
+            return true;
         }
 
         public abstract bool CanMove(FieldCoordinate coordinate);
@@ -61,5 +69,7 @@ namespace ChessClassLibrary
             hashCode = hashCode * -1521134295 + Coordinate.GetHashCode();
             return hashCode;
         }
+
+        public abstract object Clone();
     }
 }

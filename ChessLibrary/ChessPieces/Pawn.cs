@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChessLibrary.ChessPieces
+namespace ChessLibrary
 {
     public class Pawn : ChessPiece
     {

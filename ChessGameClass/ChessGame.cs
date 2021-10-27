@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using ChessLibrary;
-using ChessLibrary.ChessPieces;
 using ChessLibrary.PieceFabric;
 using ChessLibrary.ChessLogger;
 
@@ -11,17 +10,15 @@ namespace ChessGame
     {
         private int check;
         private bool isWhiteMoving;
-        private List<ChessPiece> Black;
-        private List<ChessPiece> White;
-        public int Checkmate { get; private set; }
+        public bool Checkmate { get; private set; }
         public int Check { get => check; private set { check = value; } }
-        private ChessPiece whiteKing, blackKing;
         public ChessBoard Board;
-        //public ChessPiece[,] Board = new ChessPiece[8, 8];
         private IChessLogger Logger;
      
         public bool MovePiece(FieldCoordinate pieceCoordinate, FieldCoordinate fieldCoordinate)
         {
+            if (Checkmate)
+                return false;
             bool wasMoved = false;
             ChessPiece.Color currentColor = isWhiteMoving ? ChessPiece.Color.White : ChessPiece.Color.Black;
             ChessPiece piece = Board[pieceCoordinate];
@@ -83,7 +80,6 @@ namespace ChessGame
                         if (Board.CheckCheckmate(isWhiteMoving, pieceBeating, check))
                         {
                             Logger.Log(pieceOld, fieldCoordinate, ChessStatus.Status.checkmate);
-                            Console.WriteLine("GAY OVER!");
                             return true;
                         }
                     }
@@ -113,10 +109,8 @@ namespace ChessGame
 
         public ChessGame()
         {
-            ChessPieceFabric.GetStandartComplect(out White, out Black);
+            ChessPieceFabric.GetStandartComplect(out List<ChessPiece> White, out List<ChessPiece> Black);
             Board = new ChessBoard(White, Black);
-            whiteKing = Board[5, 1];
-            blackKing = Board[5, 8];
             isWhiteMoving = true;
             Check = 0;
             Logger = new LoggerConsole();
