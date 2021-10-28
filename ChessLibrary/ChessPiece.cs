@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChessLibrary
+namespace ChessLibrary.ChessPieces
 {
     /// <summary>
     /// Class of Chess piece. Contains piece's color and it coordinate on chessboard.

@@ -1,13 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChessLibrary
+namespace ChessLibrary.ChessPieces
 {
+    /// <summary>
+    /// Constuctor of chess King.
+    /// </summary>
     public class King : ChessPiece
     {
+        /// <summary>
+        /// Method for checking king possibility to move to given coordinte.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if king is can to move.</returns>
         public override bool CanMove(FieldCoordinate coordinate)
         {
             if (!ValidCoordinate(coordinate))
@@ -24,6 +28,12 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Method for checking king possibility to move to given coordinate through given piece.
+        /// </summary>
+        /// <param name="piece">Given piece.</param>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if king is can to move to coordinate through given piece.</returns>
         public override bool CanMoveThrough(ChessPiece piece, FieldCoordinate coordinate)
         {
             if (piece.Coordinate == coordinate && piece.PieceColor == this.PieceColor)
@@ -36,6 +46,11 @@ namespace ChessLibrary
             }
         }
 
+        /// <summary>
+        /// Method for moving king to given coordinate.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if king was moved to coordinate.</returns>
         public override bool MoveTo(FieldCoordinate coordinate)
         {
             bool result = CanMove(coordinate);
@@ -46,16 +61,29 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Constructor of king.
+        /// </summary>
+        /// <param name="coordinate">Coordinate on chessboard.</param>
+        /// <param name="color">Color of king.</param>
         public King(FieldCoordinate coordinate, Color color) : base(coordinate, color)
         {
 
         }
 
+        /// <summary>
+        /// Method for convert from King to String.
+        /// </summary>
+        /// <returns>Name and coordinate of current king.</returns>
         public override string ToString()
         {
             return "K" + base.ToString();
         }
 
+        /// <summary>
+        /// Method for getting clone object of current king.
+        /// </summary>
+        /// <returns>Clone object of current king.</returns>
         public override object Clone()
         {
             return new King(this.Coordinate, this.PieceColor);

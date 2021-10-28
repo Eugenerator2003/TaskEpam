@@ -1,13 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChessLibrary
+namespace ChessLibrary.ChessPieces
 {
+    /// <summary>
+    /// Class of chess queen.
+    /// </summary>
     public class Queen : ChessPiece
     {
+        /// <summary>
+        /// Method for checking queen possibility to move to given coordinte.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if queen is can to move.</returns>
         public override bool CanMove(FieldCoordinate coordinate)
         {
             if (!ValidCoordinate(coordinate))
@@ -15,6 +19,12 @@ namespace ChessLibrary
             return this.Coordinate.isOnLine(coordinate) > 0 || this.Coordinate.isOnDiagonal(coordinate) > 0;
         }
 
+        /// <summary>
+        /// Method for checking queen possibility to move to given coordinate through given piece.
+        /// </summary>
+        /// <param name="piece">Given piece.</param>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if queen is can to move to coordinate through given piece.</returns>
         public override bool CanMoveThrough(ChessPiece piece, FieldCoordinate coordinate)
         {
             bool result = true;
@@ -95,6 +105,11 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Method for moving queen to given coordinate.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if queen was moved to coordinate.</returns>
         public override bool MoveTo(FieldCoordinate coordinate)
         {
             bool result = CanMove(coordinate);
@@ -105,16 +120,29 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Constructor of queen.
+        /// </summary>
+        /// <param name="coordinate">Coordinate on chessboard.</param>
+        /// <param name="color">Color of queen.</param>
         public Queen(FieldCoordinate coordinate, Color color) : base(coordinate, color)
         {
 
         }
 
+        /// <summary>
+        /// Method for convert from Queen to String.
+        /// </summary>
+        /// <returns>Name and coordinate of current queen.</returns>
         public override string ToString()
         {
             return "Q" + base.ToString();
         }
 
+        /// <summary>
+        /// Method for getting clone object of current queen.
+        /// </summary>
+        /// <returns>Clone object of current queen.</returns>
         public override object Clone()
         {
             return new Queen(this.Coordinate, this.PieceColor);

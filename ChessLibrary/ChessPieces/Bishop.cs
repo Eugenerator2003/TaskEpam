@@ -1,13 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChessLibrary
+namespace ChessLibrary.ChessPieces
 {
+    /// <summary>
+    /// Class of chess bishop.
+    /// </summary>
     public class Bishop : ChessPiece
     {
+        /// <summary>
+        /// Method for checking bishop possibility to move to given coordinte.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if bishop is can to move.</returns>
         public override bool CanMove(FieldCoordinate coordinate)
         {
             if (!ValidCoordinate(coordinate))
@@ -15,6 +19,12 @@ namespace ChessLibrary
             return this.Coordinate.isOnDiagonal(coordinate) != 0;
         }
 
+        /// <summary>
+        /// Method for checking bishop possibility to move to given coordinate through given piece.
+        /// </summary>
+        /// <param name="piece">Given piece.</param>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if bishop is can to move to coordinate through given piece.</returns>
         public override bool CanMoveThrough(ChessPiece piece, FieldCoordinate coordinate)
         {
             bool result = true;
@@ -71,6 +81,11 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Method for moving bishop to given coordinate.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if bishop was moved to coordinate.</returns>
         public override bool MoveTo(FieldCoordinate coordinate)
         {
             bool result = CanMove(coordinate);
@@ -81,16 +96,29 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Constructor of bishop.
+        /// </summary>
+        /// <param name="coordinate">Coordinate on chessboard.</param>
+        /// <param name="color">Color of bishop.</param>
         public Bishop(FieldCoordinate coordinate, Color color) : base(coordinate, color)
         {
 
         }
 
+        /// <summary>
+        /// Method for convert from Bishop to String.
+        /// </summary>
+        /// <returns>Name and coordinate of current bishop.</returns>
         public override string ToString()
         {
             return "B" + base.ToString();
         }
 
+        /// <summary>
+        /// Method for getting clone object of current bishop.
+        /// </summary>
+        /// <returns>Clone object of current bishop.</returns>
         public override object Clone()
         {
             return new Bishop(this.Coordinate, this.PieceColor);

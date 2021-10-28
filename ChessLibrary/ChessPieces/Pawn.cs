@@ -1,10 +1,17 @@
 ﻿using System;
 
-namespace ChessLibrary
+namespace ChessLibrary.ChessPieces
 {
+    /// <summary>
+    /// Class of chess pawn.
+    /// </summary>
     public class Pawn : ChessPiece
     {
-        public int Moves { get; private set; }
+        /// <summary>
+        /// Method for checking pawn possibility to move to given coordinte.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if pawn is can to move.</returns>
         public override bool CanMove(FieldCoordinate coordinate)
         {
             if (!ValidCoordinate(coordinate))
@@ -27,6 +34,12 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Method for checking pawn possibility to move to given coordinate through given piece.
+        /// </summary>
+        /// <param name="piece">Given piece.</param>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if pawn is can to move to coordinate through given piece.</returns>
         public override bool CanMoveThrough(ChessPiece piece, FieldCoordinate coordinate)
         {
             bool result;
@@ -49,17 +62,26 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Method for moving pawn to given coordinate.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if pawn was moved to coordinate.</returns>
         public override bool MoveTo(FieldCoordinate coordinate)
         {
             bool result = CanMove(coordinate);
             if (result)
             {
                 this.Coordinate = coordinate;
-                Moves++;
             }
             return result;
         }
 
+        /// <summary>
+        /// Method for checking pawn possibility to beat to given coordinte.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if pawn is can to beat.</returns>
         public bool CanBeat(FieldCoordinate coordinate)
         {
             bool result = false;
@@ -82,35 +104,47 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Method for pawn's beat the given coordinate.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if the pawn has beaten the given coordinate</returns>
         public bool Beat(FieldCoordinate coordinate)
         {
             bool result = CanBeat(coordinate);
             if (result)
             {
                 this.Coordinate = coordinate;
-                Moves++;
             }
             return result;
         }
 
+        /// <summary>
+        /// Constructor of pawn.
+        /// </summary>
+        /// <param name="coordinate">Coordinate on chessboard.</param>
+        /// <param name="color">Color of pawn.</param>
         public Pawn(FieldCoordinate coordinate, Color color) : base(coordinate, color)
         {
-            this.Moves = 0;
+
         }
 
-        public Pawn(FieldCoordinate coordinate, Color color, int movesCount) : base(coordinate, color)
-        {
-            this.Moves = movesCount;
-        }
-
+        /// <summary>
+        /// Method for convert from Pawn to String.
+        /// </summary>
+        /// <returns>Name and coordinate of current pawn.</returns>
         public override string ToString()
         {
             return base.ToString(); 
         }
 
+        /// <summary>
+        /// Method for getting clone object of current pawn.
+        /// </summary>
+        /// <returns>Clone object of current pawn.</returns>
         public override object Clone()
         {
-            return new Pawn(this.Coordinate, this.PieceColor, this.Moves);
+            return new Pawn(this.Coordinate, this.PieceColor);
         }
     }
 }

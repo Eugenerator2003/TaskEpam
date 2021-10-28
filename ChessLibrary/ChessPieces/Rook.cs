@@ -1,9 +1,17 @@
 ﻿using System;
 
-namespace ChessLibrary
+namespace ChessLibrary.ChessPieces
 {
+    /// <summary>
+    /// Class of chess rook.
+    /// </summary>
     public class Rook : ChessPiece
     {
+        /// <summary>
+        /// Method for checking rook possibility to move to given coordinte.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if rook is can to move.</returns>
         public override bool CanMove(FieldCoordinate coordinate)
         {
             if (!ValidCoordinate(coordinate))
@@ -11,6 +19,12 @@ namespace ChessLibrary
             return this.Coordinate.isOnLine(coordinate) > 0;
         }
 
+        /// <summary>
+        /// Method for checking rook possibility to move to given coordinate through given piece.
+        /// </summary>
+        /// <param name="piece">Given piece.</param>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if rook is can to move to coordinate through given piece.</returns>
         public override bool CanMoveThrough(ChessPiece piece, FieldCoordinate coordinate)
         {
             bool result = true;
@@ -42,6 +56,11 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Method for moving rook to given coordinate.
+        /// </summary>
+        /// <param name="coordinate">Given coordinate.</param>
+        /// <returns>True if rook was moved to coordinate.</returns>
         public override bool MoveTo(FieldCoordinate coordinate)
         {
             bool result = CanMove(coordinate);
@@ -52,16 +71,29 @@ namespace ChessLibrary
             return result;
         }
 
+        /// <summary>
+        /// Constructor of rook.
+        /// </summary>
+        /// <param name="coordinate">Coordinate on chessboard.</param>
+        /// <param name="color">Color of rook.</param>
         public Rook(FieldCoordinate coordinate, Color color) : base(coordinate, color)
         {
 
         }
 
+        /// <summary>
+        /// Method for convert from Rook to String.
+        /// </summary>
+        /// <returns>Name and coordinate of current rook.</returns>
         public override string ToString()
         {
             return "R" + base.ToString();
         }
 
+        /// <summary>
+        /// Method for getting clone object of current rook.
+        /// </summary>
+        /// <returns>Clone object of current rook.</returns>
         public override object Clone()
         {
             return new Rook(this.Coordinate, this.PieceColor);
