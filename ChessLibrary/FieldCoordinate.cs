@@ -123,11 +123,23 @@ namespace ChessLibrary
             this.Y = y;
         }
 
+        /// <summary>
+        /// Operator for compare two of coordinate.
+        /// </summary>
+        /// <param name="coordinate1">First coordinate</param>
+        /// <param name="coordinate2">Second coordinate</param>
+        /// <returns>True if coordinates are equals.</returns>
         public static bool operator ==(FieldCoordinate coordinate1, FieldCoordinate coordinate2)
         {
             return (coordinate1.X == coordinate2.X && coordinate1.Y == coordinate2.Y);
         }
 
+        /// <summary>
+        /// Operator for compare two of coordinate.
+        /// </summary>
+        /// <param name="coordinate1">First coordinate</param>
+        /// <param name="coordinate2">Second coordinate</param>
+        /// <returns>True if coordinates aren't equals.</returns>
         public static bool operator !=(FieldCoordinate coordinate1, FieldCoordinate coordinate2)
         {
             return !(coordinate1 == coordinate2);
