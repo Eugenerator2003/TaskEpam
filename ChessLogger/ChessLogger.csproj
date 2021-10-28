@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\ChessLogger.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,15 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logger.cs" />
+    <Compile Include="IChessLogger.cs" />
     <Compile Include="Loggers\LoggerConsole.cs" />
     <Compile Include="Loggers\LoggerFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChessLibrary\ChessClassLibrary.csproj">
+    <ProjectReference Include="..\ChessLibrary\ChessLibrary.csproj">
       <Project>{b213ad02-8962-4275-89b4-8d9e30db9f74}</Project>
-      <Name>ChessClassLibrary</Name>
+      <Name>ChessLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

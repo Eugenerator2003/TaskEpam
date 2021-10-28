@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{512FC364-8188-4026-B560-390AD2F00335}</ProjectGuid>
+    <ProjectGuid>{6CD8B127-B81B-4FFE-91DD-871072CBCDDC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChessGameClassTests</RootNamespace>
-    <AssemblyName>ChessGameClassTests</AssemblyName>
+    <RootNamespace>ChessGameTests</RootNamespace>
+    <AssemblyName>ChessGameTests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -57,22 +57,19 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChessGameTests.cs" />
-    <Compile Include="ChessPiecesTests\PawnTests.cs" />
-    <Compile Include="ChessPiecesTests\QueenTests.cs" />
-    <Compile Include="ChessPiecesTests\KingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChessGameClass\ChessGameClass.csproj">
+    <ProjectReference Include="..\ChessGame\ChessGame.csproj">
       <Project>{CCFF55AE-4C4D-4F6D-A0FD-F748AFA7F970}</Project>
-      <Name>ChessGameClass</Name>
+      <Name>ChessGame</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChessLibrary\ChessClassLibrary.csproj">
+    <ProjectReference Include="..\ChessLibrary\ChessLibrary.csproj">
       <Project>{b213ad02-8962-4275-89b4-8d9e30db9f74}</Project>
-      <Name>ChessClassLibrary</Name>
+      <Name>ChessLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

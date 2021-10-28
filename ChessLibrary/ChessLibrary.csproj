@@ -42,10 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChessBoard.cs" />
+    <Compile Include="Chessboard.cs" />
     <Compile Include="ChessPiece.cs" />
     <Compile Include="ChessPieces\Bishop.cs" />
-    <Compile Include="ChessPieces\ChessPieceFabric.cs" />
+    <Compile Include="ChessPieceFabric.cs" />
     <Compile Include="ChessPieces\King.cs" />
     <Compile Include="ChessPieces\Knightc.cs" />
     <Compile Include="ChessPieces\Queen.cs" />

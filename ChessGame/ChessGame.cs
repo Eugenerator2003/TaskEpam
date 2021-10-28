@@ -2,19 +2,35 @@
 using System.Collections.Generic;
 using ChessLibrary;
 using ChessLibrary.PieceFabric;
-using ChessLibrary.ChessLogger;
+using ChessLogger;
 
 namespace ChessGame
 {
+    /// <summary>
+    /// Class of game of Chess. Contains method to move piece on chessboard and status of chess game.
+    /// </summary>
     public class ChessGame
     {
         private int check;
         private bool isWhiteMoving;
+        /// <summary>
+        /// Property of status of checkmate.
+        /// </summary>
         public bool Checkmate { get; private set; }
+        /// <summary>
+        /// Propety for status of the check.
+        /// The check was put on by White if check is 1 and was put on by Black if it's 2.
+        /// </summary>
         public int Check { get => check; private set { check = value; } }
-        public ChessBoard Board;
+        public Chessboard Board;
         private IChessLogger Logger;
-     
+
+        /// <summary>
+        /// Method to move piece on chessboard.
+        /// </summary>
+        /// <param name="pieceCoordinate">Coordinate where located piece.</param>
+        /// <param name="fieldCoordinate">Coordinate where piece must be moved.</param>
+        /// <returns>True if piece was moved</returns>
         public bool MovePiece(FieldCoordinate pieceCoordinate, FieldCoordinate fieldCoordinate)
         {
             if (Checkmate)
@@ -49,7 +65,7 @@ namespace ChessGame
                         piece.MoveTo(fieldCoordinate);
                         wasMoved = true;
                     }
-                        
+
                 }
             }
             else if (piece == null)
@@ -86,7 +102,7 @@ namespace ChessGame
                     isWhiteMoving = isWhiteMoving ? false : true;
                     Logger.Log(pieceOld, fieldCoordinate, (Check != 0) ? ChessStatus.Status.check : ChessStatus.Status.nothing);
                 }
-                else 
+                else
                 {
                     Board[fieldCoordinate] = null;
                     Board[pieceCoordinate] = pieceOld;
@@ -107,16 +123,24 @@ namespace ChessGame
             return wasMoved;
         }
 
+        /// <summary>
+        /// Constructor of chessgame class.
+        /// </summary>
         public ChessGame()
         {
             ChessPieceFabric.GetStandartComplect(out List<ChessPiece> White, out List<ChessPiece> Black);
-            Board = new ChessBoard(White, Black);
+            Board = new Chessboard(White, Black);
             isWhiteMoving = true;
             Check = 0;
             Logger = new LoggerConsole();
         }
 
-        public ChessGame(string LoggerType, string PathName = " ") : this() 
+        /// <summary>
+        /// Constructor of chessgame class.
+        /// </summary>
+        /// <param name="LoggerType">Type of logger which will be used.</param>
+        /// <param name="PathName">Path to file where logger will be log game info (uses if logger type is file logger)</param>
+        public ChessGame(string LoggerType, string PathName = " ") : this()
         {
             if (LoggerType == "console")
             {
@@ -133,11 +157,6 @@ namespace ChessGame
                     Logger = new LoggerFile();
                 }
             }
-        }
-
-        public void ConsoleShowBoard()
-        {
-            Board.ShowBoardInConsole();
         }
     }
 }

@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using ChessLibrary.ChessPieces;
 
 namespace ChessLibrary.PieceFabric
 {
+    /// <summary>
+    /// Static class of fabric of chess pieces.
+    /// </summary>
     public static class ChessPieceFabric
     {
+        /// <summary>
+        /// Method for getting stantard sets of White and Black pieces with their initial position.
+        /// </summary>
+        /// <param name="White">Collection of White pieces.</param>
+        /// <param name="Black">Collection of Black pieces.</param>
         public static void GetStandartComplect(out List<ChessPiece> White, out List<ChessPiece> Black)
         {
             White = new List<ChessPiece>();
@@ -16,7 +23,7 @@ namespace ChessLibrary.PieceFabric
             {
                 coordinate_x++;
                 switch (i)
-                {
+                {   
                     case (0):
                     case (1):
                     case (2):

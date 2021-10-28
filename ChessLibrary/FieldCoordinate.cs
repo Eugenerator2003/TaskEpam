@@ -2,11 +2,25 @@
 
 namespace ChessLibrary
 {
+    /// <summary>
+    /// Class of coordinate on chessboard.
+    /// </summary>
     public struct FieldCoordinate
     {
+        /// <summary>
+        /// Property of X coordinate.
+        /// </summary>
         public int X { get; set; }
+        /// <summary>
+        /// Property of Y coordinate.
+        /// </summary>
         public int Y { get; set; }
 
+        /// <summary>
+        /// Method for checking current and another coordinates location on the same line.
+        /// </summary>
+        /// <param name="coordinate">Another coordinate.</param>
+        /// <returns>Line number starting clockwise relative to the current piece.</returns>
         public int isOnLine(FieldCoordinate coordinate)
         {
             int lineNum = 0;
@@ -27,6 +41,11 @@ namespace ChessLibrary
             return lineNum;
         }
 
+        /// <summary>
+        /// Method for checking current and another coordinates location on the same diagonal.
+        /// </summary>
+        /// <param name="coordinate">Another coordinate.</param>
+        /// <returns>Diagonale number starting clockwise relative to the current piece.</returns>
         public int isOnDiagonal(FieldCoordinate coordinate)
         {
             int diagonalNum = 0;
@@ -93,6 +112,11 @@ namespace ChessLibrary
             return diagonalNum;
         }
 
+        /// <summary>
+        /// Constructor of field coordinate. 
+        /// </summary>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
         public FieldCoordinate(int x, int y)
         {
             this.X = x;
@@ -108,8 +132,11 @@ namespace ChessLibrary
         {
             return !(coordinate1 == coordinate2);
         }
-        
 
+        /// <summary>
+        /// Method for convert from FieldCoordinate to String.
+        /// </summary> 
+        /// <returns>Coordinate according to chessboard.</returns>
         public override string ToString()
         {
             char x = ' ';

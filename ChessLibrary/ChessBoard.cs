@@ -1,62 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ChessLibrary;
 
 namespace ChessLibrary
 { 
 
-    public class ChessBoard
+    /// <summary>
+    /// Chessboard class. Contains sets of chess pieces with their location on game board.
+    /// </summary>
+    public class Chessboard
     {
-        public ChessPiece whiteKing, blackKing;
-        List<ChessPiece> White;
-        List<ChessPiece> Black;
-        ChessPiece[,] board = new ChessPiece[8, 8];
-
-        public bool CheckTheCheck(bool isWhiteMoving, out ChessPiece pieceBeating, ref int chessCheck)
-        {
-            pieceBeating = null;
-            int check = 0;
-            bool CanMove = true;
-            int unexpectedCheck = (chessCheck != 0) ? (( chessCheck == 1) ? 2 : 1) : (isWhiteMoving ? 2 : 1);
-            for (int i = 0; i < 2; i++)
-            {
-                ChessPiece king = i == 0 ? blackKing : whiteKing;
-                List<ChessPiece> current = i == 0 ? White : Black;
-                foreach (ChessPiece movePiece in current)
-                {
-                    if (movePiece.CanMove(king.Coordinate))
-                    {
-                        if (this.CanMoveOnBoard(movePiece, king.Coordinate))
-                        {
-                            pieceBeating = movePiece;
-                            check = i == 0 ? 1 : 2;
-                        }
-                        else if (check != 0)
-                        {
-                            check = 0;
-                            break;
-                        }
-                    }
-                }
-                if (check != 0)
-                {
-                    break;
-                }
-            }
-            if (check == unexpectedCheck || (chessCheck == check && check != 0))
-            {
-                CanMove = false;
-            }
-            else
-            {
-                chessCheck = check;
-            }
-            return CanMove;
-        }
-
+        private ChessPiece whiteKing, blackKing;
+        private List<ChessPiece> White;
+        private List<ChessPiece> Black;
+        private ChessPiece[,] board = new ChessPiece[8, 8];
+        
+        /// <summary>
+        /// Method for checking piece's possibility of moving to given coordinate
+        /// </summary>
+        /// <param name="piece">Chess piece</param>
+        /// <param name="fieldCoordinate">Coordinate where piece is want to move</param>
+        /// <returns>True if this piece is can to move</returns>
         public bool CanMoveOnBoard(ChessPiece piece, FieldCoordinate fieldCoordinate)
         {
             bool isCanMove = true;
@@ -104,6 +67,62 @@ namespace ChessLibrary
             return isCanMove;
         }
 
+        /// <summary>
+        /// Method for checking the check status.
+        /// </summary>
+        /// <param name="isWhiteMoving">Does White play this move.</param>
+        /// <param name="pieceBeating">A chess piece can beat one of the Kings.</param>
+        /// <param name="chessCheck">Check status.</param>
+        /// <returns>True if game situation is can to continue from this move (Check was putted or player left the check).</returns>
+        public bool CheckTheCheck(bool isWhiteMoving, out ChessPiece pieceBeating, ref int chessCheck)
+        {
+            pieceBeating = null;
+            int check = 0;
+            bool CanMove = true;
+            int unexpectedCheck = (chessCheck != 0) ? ((chessCheck == 1) ? 2 : 1) : (isWhiteMoving ? 2 : 1);
+            for (int i = 0; i < 2; i++)
+            {
+                ChessPiece king = i == 0 ? blackKing : whiteKing;
+                List<ChessPiece> current = i == 0 ? White : Black;
+                foreach (ChessPiece movePiece in current)
+                {
+                    if (movePiece.CanMove(king.Coordinate))
+                    {
+                        if (this.CanMoveOnBoard(movePiece, king.Coordinate))
+                        {
+                            pieceBeating = movePiece;
+                            check = i == 0 ? 1 : 2;
+                        }
+                        else if (check != 0)
+                        {
+                            check = 0;
+                            break;
+                        }
+                    }
+                }
+                if (check != 0)
+                {
+                    break;
+                }
+            }
+            if (check == unexpectedCheck || (chessCheck == check && check != 0))
+            {
+                CanMove = false;
+            }
+            else
+            {
+                chessCheck = check;
+            }
+            return CanMove;
+        }
+
+        /// <summary>
+        /// Method for checking the checkmate in current game situation.
+        /// </summary>
+        /// <param name="isWhiteMoving">Does White play this move.</param>
+        /// <param name="pieceBeating">A chess piece beating one of the Kings.</param>
+        /// <param name="check">Check status.</param>
+        /// <returns>True if game situation is can to continue from this move.</returns>
         public bool CheckCheckmate(bool isWhiteMoving, ChessPiece pieceBeating, int check)
         {
             int checkOld = check;
@@ -220,6 +239,13 @@ namespace ChessLibrary
             return checkmate;
         }
 
+
+        /// <summary>
+        /// Method for getting collection of field coordinate between two of cells.
+        /// </summary>
+        /// <param name="fieldCoordinate1">First coordinate.</param>
+        /// <param name="fieldCoordinate2">Second coordinate.</param>
+        /// <returns>Collection of field coordinate.</returns>
         private List<FieldCoordinate> _GetFreeCoordinatesBetween(FieldCoordinate fieldCoordinate1, FieldCoordinate fieldCoordinate2)
         {
             List<FieldCoordinate> coordinateBetween = new List<FieldCoordinate>();
@@ -309,6 +335,10 @@ namespace ChessLibrary
             }
         }
 
+        /// <summary>
+        /// Set King piece 
+        /// </summary>
+        /// <param name="pieceKing">Piece King</param>
         private void _SetKing(ChessPiece pieceKing)
         {
             if (pieceKing is King)
@@ -324,7 +354,12 @@ namespace ChessLibrary
             }
         }
 
-        public ChessBoard(List<ChessPiece> white, List<ChessPiece> black)
+        /// <summary>
+        /// Constructor of chessboard.
+        /// </summary>
+        /// <param name="white">Collection of White piece set.</param>
+        /// <param name="black">Collection of Black piece set.</param>
+        public Chessboard(List<ChessPiece> white, List<ChessPiece> black)
         {
             this.White = white;
             this.Black = black;
@@ -341,33 +376,12 @@ namespace ChessLibrary
             
         }
 
-        public void ShowBoardInConsole()
-        {
-            Console.WriteLine();
-            for (int i = 8; i > 0; i--)
-            {
-                Console.Write(i + 1 + " ");
-                for (int j = 1; j < 9; j++)
-                {
-                    if (this[j, i] != null)
-                    {
-                        Console.Write(this[j, i].Coordinate + " ");
-                    }
-                    else
-                    {
-                        Console.Write("   ");
-                    }
-                }
-                Console.WriteLine();
-            }
-            Console.Write("  ");
-            for (int i = 97; i < 105; i++)
-            {
-                Console.Write($"{(char)i}  ");
-            }
-            Console.WriteLine();
-        }
-
+        /// <summary>
+        /// Indexator for access to chessboard.
+        /// </summary>
+        /// <param name="x">X coordinate of chessboard.</param>
+        /// <param name="y">Y coordinate of chessboard.</param>
+        /// <returns>Link to piece located on this coordinate.</returns>
         public ChessPiece this[int x, int y]
         {
             get => board[x - 1, y - 1];
@@ -378,6 +392,11 @@ namespace ChessLibrary
             }
         }
 
+        /// <summary>
+        /// Indexator for access to chessboard.
+        /// </summary>
+        /// <param name="coordinate">Coordinate of chessboard.</param>
+        /// <returns>Link to piece located on thid coordinate.</returns>
         public ChessPiece this[FieldCoordinate coordinate]
         {
             get => board[coordinate.X - 1, coordinate.Y - 1];

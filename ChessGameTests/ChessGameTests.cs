@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ChessLibrary;
-using System;
-using ChessLibrary.ChessPieces;
 using ChessGame;
+using System;
 
 namespace ChessGame.Tests
 {
@@ -116,7 +115,7 @@ namespace ChessGame.Tests
             coordinate1 = new FieldCoordinate(5, 8);
             coordinate2 = new FieldCoordinate(5, 7);
             game.MovePiece(coordinate1, coordinate2);
-            game.ConsoleShowBoard();
+            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(3, 3);
             coordinate2 = new FieldCoordinate(4, 5);

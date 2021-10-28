@@ -4,7 +4,6 @@ namespace ChessLibrary
 {
     public class Rook : ChessPiece
     {
-        public bool WasMoved { get; private set; }
         public override bool CanMove(FieldCoordinate coordinate)
         {
             if (!ValidCoordinate(coordinate))
@@ -53,25 +52,9 @@ namespace ChessLibrary
             return result;
         }
 
-        public bool Castling(FieldCoordinate coordinate)
-        {
-            bool result = false;
-            if (!WasMoved && (this.Coordinate.Y == 1 || this.Coordinate.Y == 8) && this.Coordinate.Y == coordinate.Y
-                && (this.Coordinate.X == 1 || this.Coordinate.X == 8))
-            {
-                this.Coordinate = coordinate;
-            }
-            return result;
-        }
-
         public Rook(FieldCoordinate coordinate, Color color) : base(coordinate, color)
         {
-            WasMoved = false;
-        }
 
-        public Rook(FieldCoordinate coordinate, Color color, bool wasMoved) : base(coordinate, color)
-        {
-            this.WasMoved = wasMoved;
         }
 
         public override string ToString()
@@ -81,7 +64,7 @@ namespace ChessLibrary
 
         public override object Clone()
         {
-            return new Rook(this.Coordinate, this.PieceColor, this.WasMoved);
+            return new Rook(this.Coordinate, this.PieceColor);
         }
     }
 }

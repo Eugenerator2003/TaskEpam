@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CCFF55AE-4C4D-4F6D-A0FD-F748AFA7F970}</ProjectGuid>
+    <ProjectGuid>{015C30D1-B040-4D11-A703-592E91348461}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChessGameClass</RootNamespace>
-    <AssemblyName>ChessGameClass</AssemblyName>
+    <RootNamespace>ChessGame</RootNamespace>
+    <AssemblyName>ChessGame</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -45,9 +45,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChessLibrary\ChessClassLibrary.csproj">
+    <ProjectReference Include="..\ChessLibrary\ChessLibrary.csproj">
       <Project>{b213ad02-8962-4275-89b4-8d9e30db9f74}</Project>
-      <Name>ChessClassLibrary</Name>
+      <Name>ChessLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChessLogger\ChessLogger.csproj">
       <Project>{7d4f1f4b-22f2-4ed5-a464-cc611218b0f6}</Project>

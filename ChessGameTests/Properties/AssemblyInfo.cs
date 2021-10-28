@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью указанного ниже 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // общие сведения об этой сборке.
-[assembly: AssemblyTitle("ChessGameClassTests")]
+[assembly: AssemblyTitle("ChessGameTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ChessGameClassTests")]
+[assembly: AssemblyProduct("ChessGameTests")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("512fc364-8188-4026-b560-390ad2f00335")]
+[assembly: Guid("6cd8b127-b81b-4ffe-91dd-871072cbcddc")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //
