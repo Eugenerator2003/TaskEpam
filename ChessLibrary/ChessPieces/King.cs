@@ -81,6 +81,16 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
+        /// Method for comparsion current king with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is equal to current king.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is King king && king.Coordinate == this.Coordinate && king.PieceColor == this.PieceColor;
+        }
+
+        /// <summary>
         /// Method for getting clone object of current king.
         /// </summary>
         /// <returns>Clone object of current king.</returns>

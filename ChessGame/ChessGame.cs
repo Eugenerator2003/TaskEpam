@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using ChessLibrary;
+using ChessLibrary.ChessPieces;
 using ChessLibrary.PieceFabric;
 using ChessLogger;
 
-namespace ChessGame
+namespace ChessLibrary
 {
     /// <summary>
     /// Class of game of Chess. Contains method to move piece on chessboard and status of chess game.
@@ -52,10 +52,9 @@ namespace ChessGame
                             pawn.MoveTo(fieldCoordinate);
                             wasMoved = true;
                         }
-                        else if (takedPiece != null && pawn.CanBeat(fieldCoordinate))
+                        else if (takedPiece != null && pawn.CanBeat(takedPiece))
                         {
-                            pawn.Beat(fieldCoordinate);
-                            Board[fieldCoordinate] = null;
+                            pawn.Beat(takedPiece);
                             piece = (ChessPiece)pawn;
                             wasMoved = true;
                         }
@@ -68,23 +67,18 @@ namespace ChessGame
 
                 }
             }
-            else if (piece == null)
-            {
-                Console.WriteLine($"No figures in this coordinate {pieceCoordinate}");
-            }
             if (wasMoved)
             {
                 if (takedPiece != null)
                 {
                     Board.RemovePiece(takedPiece);
-                    Board[takedPiece.Coordinate] = null;
                 }
                 if (Board.CheckTheCheck(isWhiteMoving, out ChessPiece pieceBeating, ref check))
                 {
                     if (piece is Pawn && (fieldCoordinate.Y == 1 || fieldCoordinate.Y == 8))
                     {
 
-                        Board[fieldCoordinate] = new Queen(fieldCoordinate, currentColor); //??
+                        Board[fieldCoordinate] = new Queen(fieldCoordinate, currentColor);
                     }
                     else
                     {
@@ -104,21 +98,14 @@ namespace ChessGame
                 }
                 else
                 {
-                    Board[fieldCoordinate] = null;
-                    Board[pieceCoordinate] = pieceOld;
                     Board.RemovePiece(piece);
                     Board.AddPiece(pieceOld);
                     if (takedPiece != null)
                     {
                         Board[pieceCoordinate] = pieceOld;
-                        Board[takedPiece.Coordinate] = takedPiece;
                         Board.AddPiece(takedPiece);
                     }
                 }
-            }
-            else
-            {
-                Console.WriteLine($"Can't move from {pieceCoordinate} to {fieldCoordinate}");
             }
             return wasMoved;
         }
@@ -138,15 +125,15 @@ namespace ChessGame
         /// <summary>
         /// Constructor of chessgame class.
         /// </summary>
-        /// <param name="LoggerType">Type of logger which will be used.</param>
+        /// <param name="LoggerType">Type of logger which will be used(ConsoleLogger / FileLogger).</param>
         /// <param name="PathName">Path to file where logger will be log game info (uses if logger type is file logger)</param>
         public ChessGame(string LoggerType, string PathName = " ") : this()
         {
-            if (LoggerType == "console")
+            if (LoggerType == "ConsoleLogger")
             {
                 Logger = new LoggerConsole();
             }
-            else if (LoggerType == "file")
+            else if (LoggerType == "FileLogger")
             {
                 if (PathName != " ")
                 {

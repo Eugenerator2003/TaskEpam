@@ -35,7 +35,8 @@ namespace ChessLibrary.ChessPieces
         /// <returns>True if knight is can to move to coordinate through given piece.</returns>
         public override bool CanMoveThrough(ChessPiece piece, FieldCoordinate coordinate)
         {
-            return CanMove(coordinate);
+            bool result = piece.PieceColor == this.PieceColor && piece.Coordinate != coordinate || this.PieceColor != piece.PieceColor;
+            return result && CanMove(coordinate);
         }
 
         /// <summary>
@@ -70,6 +71,16 @@ namespace ChessLibrary.ChessPieces
         public override string ToString()
         {
             return "N" + base.ToString();
+        }
+
+        /// <summary>
+        /// Method for comparsion current knight with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is equal to current knight.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is Knight knight && knight.Coordinate == this.Coordinate && knight.PieceColor == this.PieceColor;
         }
 
         /// <summary>

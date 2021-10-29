@@ -140,6 +140,16 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
+        /// Method for comparsion current queen with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is equal to current queen.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is Queen queen && queen.Coordinate == this.Coordinate && queen.PieceColor == this.PieceColor;
+        }
+
+        /// <summary>
         /// Method for getting clone object of current queen.
         /// </summary>
         /// <returns>Clone object of current queen.</returns>

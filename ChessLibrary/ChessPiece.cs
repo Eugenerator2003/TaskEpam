@@ -104,7 +104,7 @@ namespace ChessLibrary.ChessPieces
         /// Method for comparsion current chess piece with other object.
         /// </summary>
         /// <param name="obj">Object</param>
-        /// <returns>True if object is equal to current chess piece</returns>
+        /// <returns>True if object is equal to current chess piece.</returns>
         public override bool Equals(object obj)
         {
             return obj is ChessPiece piece &&

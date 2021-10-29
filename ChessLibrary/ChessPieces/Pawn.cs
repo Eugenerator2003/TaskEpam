@@ -55,6 +55,10 @@ namespace ChessLibrary.ChessPieces
                     result = CanMove(coordinate);
                 }
             }
+            else if (piece.Coordinate == coordinate)
+            {
+                result = false;
+            }
             else
             {
                 result = CanMove(coordinate);
@@ -78,25 +82,28 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
-        /// Method for checking pawn possibility to beat to given coordinte.
+        /// Method for checking pawn possibility to beat to given piece.
         /// </summary>
-        /// <param name="coordinate">Given coordinate.</param>
+        /// <param name="piece">Given piece.</param>
         /// <returns>True if pawn is can to beat.</returns>
-        public bool CanBeat(FieldCoordinate coordinate)
+        public bool CanBeat(ChessPiece piece)
         {
+            if (piece.PieceColor == this.PieceColor)
+                return false;
+
             bool result = false;
             if (PieceColor == Color.White)
             {
-                if ((this.Coordinate.X + 1 == coordinate.X || this.Coordinate.X - 1 == coordinate.X)
-                    && (this.Coordinate.Y + 1 == coordinate.Y))
+                if ((this.Coordinate.X + 1 == piece.Coordinate.X || this.Coordinate.X - 1 == piece.Coordinate.X)
+                    && (this.Coordinate.Y + 1 == piece.Coordinate.Y))
                 {
                     result = true;
                 }
             }
             else
             {
-                if ((this.Coordinate.X + 1 == coordinate.X || this.Coordinate.X - 1 == coordinate.X)
-                   && (this.Coordinate.Y - 1 == coordinate.Y))
+                if ((this.Coordinate.X + 1 == piece.Coordinate.X || this.Coordinate.X - 1 == piece.Coordinate.X)
+                   && (this.Coordinate.Y - 1 == piece.Coordinate.Y))
                 {
                     result = true;
                 }
@@ -105,16 +112,16 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
-        /// Method for pawn's beat the given coordinate.
+        /// Method for pawn's beat the given piece.
         /// </summary>
-        /// <param name="coordinate">Given coordinate.</param>
-        /// <returns>True if the pawn has beaten the given coordinate</returns>
-        public bool Beat(FieldCoordinate coordinate)
+        /// <param name="piece">Given piece.</param>
+        /// <returns>True if the pawn has beaten the given piece</returns>
+        public bool Beat(ChessPiece piece)
         {
-            bool result = CanBeat(coordinate);
+            bool result = CanBeat(piece);
             if (result)
             {
-                this.Coordinate = coordinate;
+                this.Coordinate = piece.Coordinate;
             }
             return result;
         }
@@ -136,6 +143,16 @@ namespace ChessLibrary.ChessPieces
         public override string ToString()
         {
             return base.ToString(); 
+        }
+
+        /// <summary>
+        /// Method for comparsion current pawn with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is equal to current pawn.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is Pawn pawn && pawn.Coordinate == this.Coordinate && pawn.PieceColor == this.PieceColor;
         }
 
         /// <summary>

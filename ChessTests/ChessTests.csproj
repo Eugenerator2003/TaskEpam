@@ -57,6 +57,12 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChessGameTests.cs" />
+    <Compile Include="ChessPieces\BishopTests.cs" />
+    <Compile Include="ChessPieces\KingTests.cs" />
+    <Compile Include="ChessPieces\KnightTests.cs" />
+    <Compile Include="ChessPieces\PawnTests.cs" />
+    <Compile Include="ChessPieces\QueenTests.cs" />
+    <Compile Include="ChessPieces\RookTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

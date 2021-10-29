@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ChessLibrary.ChessPieces
 {
@@ -97,6 +98,16 @@ namespace ChessLibrary.ChessPieces
         public override object Clone()
         {
             return new Rook(this.Coordinate, this.PieceColor);
+        }
+
+        /// <summary>
+        /// Method for comparsion current rook with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is equal to current rook.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is Rook rook && rook.Coordinate == this.Coordinate && rook.PieceColor == this.PieceColor;
         }
     }
 }

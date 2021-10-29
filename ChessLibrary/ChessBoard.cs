@@ -25,6 +25,7 @@ namespace ChessLibrary
         {
             bool isCanMove = true;
             bool isPawn = piece is Pawn;
+            ChessPiece peace = null;
             foreach (ChessPiece chessPiece in board)
             {
                 if (chessPiece != null)
@@ -36,6 +37,7 @@ namespace ChessLibrary
                             if (!piece.CanMoveThrough(chessPiece, fieldCoordinate))
                             {
                                 isCanMove = false;
+                                peace = piece;
                                 break;
                             }
                         }
@@ -51,7 +53,7 @@ namespace ChessLibrary
                             }
                             else
                             {
-                                if (!(piece as Pawn).CanBeat(fieldCoordinate))
+                                if (!(piece as Pawn).CanBeat(this[fieldCoordinate]))
                                 {
                                     isCanMove = false;
                                     break;
@@ -85,18 +87,14 @@ namespace ChessLibrary
             {
                 ChessPiece king = i == 0 ? blackKing : whiteKing;
                 List<ChessPiece> current = i == 0 ? White : Black;
-                foreach (ChessPiece movePiece in current)
+                foreach (ChessPiece pieceMove in current)
                 {
-                    if (movePiece.CanMove(king.Coordinate))
+                    if (pieceMove.CanMove(king.Coordinate))
                     {
-                        if (this.CanMoveOnBoard(movePiece, king.Coordinate))
+                        if (this.CanMoveOnBoard(pieceMove, king.Coordinate))
                         {
-                            pieceBeating = movePiece;
+                            pieceBeating = pieceMove;
                             check = i == 0 ? 1 : 2;
-                        }
-                        else if (check != 0)
-                        {
-                            check = 0;
                             break;
                         }
                     }
@@ -204,7 +202,7 @@ namespace ChessLibrary
                 }
             }
 
-            if (checkmate)
+            if (checkmate && !(pieceBeating is Knight))
             {
                 List<FieldCoordinate> coordinateBetween = _GetFreeCoordinatesBetween(king.Coordinate, pieceBeating.Coordinate);
                 for (int i = 0; i < currentSet.Count; i++)
@@ -212,9 +210,9 @@ namespace ChessLibrary
                     bool canMove = false;
                     foreach (FieldCoordinate coordinate in coordinateBetween)
                     {
-                        ChessPiece pieceOld = (ChessPiece)currentSet[i].Clone();
                         if (this.CanMoveOnBoard(currentSet[i], coordinate) && currentSet[i] != king)
                         {
+                            ChessPiece pieceOld = (ChessPiece)currentSet[i].Clone();
                             FieldCoordinate coordinatePieceOld = currentSet[i].Coordinate;
                             currentSet[i].MoveTo(coordinate);
                             this[coordinatePieceOld] = null;
@@ -302,7 +300,7 @@ namespace ChessLibrary
                         break;
                 }
                 int x = fieldCoordinate1.X + x_step, y = fieldCoordinate1.Y + y_step;
-                while (x > 0 && x < 9 && y > 0 && y < 9 && this[x, y] == null && x != fieldCoordinate2.X && y != fieldCoordinate2.Y)
+                while (x > 0 && x < 9 && y > 0 && y < 9 && this[x, y] == null && fieldCoordinate2 != new FieldCoordinate(x, y))
                 {
                     coordinateBetween.Add(new FieldCoordinate(x, y));
                     x += x_step;
@@ -312,8 +310,14 @@ namespace ChessLibrary
             return coordinateBetween;
         }
 
+
+        /// <summary>
+        /// Method for removing piece from chessboard.
+        /// </summary>
+        /// <param name="pieceRemoved">Chess piece which to be removed.</param>
         public void RemovePiece(ChessPiece pieceRemoved)
         {
+            this[pieceRemoved.Coordinate] = null;
             if (pieceRemoved.PieceColor == ChessPiece.Color.White)
             {
                 White.Remove(pieceRemoved);
@@ -324,8 +328,13 @@ namespace ChessLibrary
             }
         }
 
+        /// <summary>
+        /// Method for adding piece to chessboard.
+        /// </summary>
+        /// <param name="pieceAdded">Chess piece which to be adding.</param>
         public void AddPiece(ChessPiece pieceAdded)
         {
+            this[pieceAdded.Coordinate] = pieceAdded;
             if (pieceAdded.PieceColor == ChessPiece.Color.White)
             {
                 White.Add(pieceAdded);
@@ -337,7 +346,7 @@ namespace ChessLibrary
         }
 
         /// <summary>
-        /// Set King piece 
+        /// Set King piece.
         /// </summary>
         /// <param name="pieceKing">Piece King</param>
         private void _SetKing(ChessPiece pieceKing)

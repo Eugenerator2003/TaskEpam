@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ChessLibrary.ChessPieces
 {
@@ -115,6 +116,8 @@ namespace ChessLibrary.ChessPieces
             return "B" + base.ToString();
         }
 
+        
+
         /// <summary>
         /// Method for getting clone object of current bishop.
         /// </summary>
@@ -122,6 +125,24 @@ namespace ChessLibrary.ChessPieces
         public override object Clone()
         {
             return new Bishop(this.Coordinate, this.PieceColor);
+        }
+
+        /// <summary>
+        /// Method for comparsion current bishop with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is equal to current bishop.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is Bishop bishop && bishop.Coordinate == this.Coordinate && bishop.PieceColor == this.PieceColor;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -1219036983;
+            hashCode = hashCode * -1521134295 + PieceColor.GetHashCode();
+            hashCode = hashCode * -1521134295 + Coordinate.GetHashCode();
+            return hashCode;
         }
     }
 }

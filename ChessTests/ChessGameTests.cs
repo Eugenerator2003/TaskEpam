@@ -1,13 +1,77 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ChessLibrary;
-using ChessGame;
+using ChessLibrary.ChessPieces;
 using System;
 
-namespace ChessGame.Tests
+namespace ChessLibrary.Tests
 {
     [TestClass()]
     public class ChessGameTests
     {
+        [TestMethod()]
+        public void CheckmateIn7MoveTest()
+        {
+            //ChessGame game = new ChessGame("FileLogger");
+            ChessGame game = new ChessGame();
+            FieldCoordinate coordinate1, coordinate2;
+
+            coordinate1 = new FieldCoordinate(5, 2);
+            coordinate2 = new FieldCoordinate(5, 4);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(5, 7);
+            coordinate2 = new FieldCoordinate(5, 5);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(7, 1);
+            coordinate2 = new FieldCoordinate(6, 3);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(2, 8);
+            coordinate2 = new FieldCoordinate(3, 6);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(6, 1);
+            coordinate2 = new FieldCoordinate(3, 4);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(3, 6);
+            coordinate2 = new FieldCoordinate(4, 4);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(6, 3);
+            coordinate2 = new FieldCoordinate(5, 5);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(4, 8);
+            coordinate2 = new FieldCoordinate(7, 5);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(5, 5);
+            coordinate2 = new FieldCoordinate(6, 7);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(7, 5);
+            coordinate2 = new FieldCoordinate(7, 2);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(8, 1);
+            coordinate2 = new FieldCoordinate(6, 1);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(7, 2);
+            coordinate2 = new FieldCoordinate(5, 4);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(3, 4);
+            coordinate2 = new FieldCoordinate(5, 2);
+            game.MovePiece(coordinate1, coordinate2);
+
+            coordinate1 = new FieldCoordinate(4, 4);
+            coordinate2 = new FieldCoordinate(6, 3);
+            game.MovePiece(coordinate1, coordinate2);
+        }
+
         [TestMethod()]
         public void ChekmateIn5MovesTest()
         {
@@ -60,67 +124,54 @@ namespace ChessGame.Tests
             coordinate1 = new FieldCoordinate(5, 2);
             coordinate2 = new FieldCoordinate(5, 4);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(5, 7);
             coordinate2 = new FieldCoordinate(5, 5);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(7, 1);
             coordinate2 = new FieldCoordinate(6, 3);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(2, 8);
             coordinate2 = new FieldCoordinate(3, 6);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(6, 1);
             coordinate2 = new FieldCoordinate(3, 4);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(4, 7);
             coordinate2 = new FieldCoordinate(4, 6);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(2, 1);
             coordinate2 = new FieldCoordinate(3, 3);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(3, 8);
             coordinate2 = new FieldCoordinate(7, 4);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(6, 3);
             coordinate2 = new FieldCoordinate(5, 5);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(7, 4);
             coordinate2 = new FieldCoordinate(4, 1);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(3, 4);
             coordinate2 = new FieldCoordinate(6, 7);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(5, 8);
             coordinate2 = new FieldCoordinate(5, 7);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(3, 3);
             coordinate2 = new FieldCoordinate(4, 5);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
         }
 
         [TestMethod()]
@@ -141,14 +192,9 @@ namespace ChessGame.Tests
             coordinate2 = new FieldCoordinate(6, 3);
             game.MovePiece(coordinate1, coordinate2);
 
-            //game.ConsoleShowBoard();
-
             coordinate1 = new FieldCoordinate(4, 8);
             coordinate2 = new FieldCoordinate(8, 4);
             game.MovePiece(coordinate1, coordinate2);
-
-            //game.ConsoleShowBoard();
-            //game.ConsoleShowCoordinate();
         }
 
         [TestMethod()]
@@ -160,37 +206,30 @@ namespace ChessGame.Tests
             coordinate1 = new FieldCoordinate(5, 2);
             coordinate2 = new FieldCoordinate(5, 4);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(5, 7);
             coordinate2 = new FieldCoordinate(5, 5);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(6, 1);
             coordinate2 = new FieldCoordinate(3, 4);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(2, 8);
             coordinate2 = new FieldCoordinate(3, 6);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(4, 1);
             coordinate2 = new FieldCoordinate(8, 5);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(7, 8);
             coordinate2 = new FieldCoordinate(6, 6);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
 
             coordinate1 = new FieldCoordinate(8, 5);
             coordinate2 = new FieldCoordinate(6, 7);
             game.MovePiece(coordinate1, coordinate2);
-            //game.ConsoleShowBoard();
         }
     }
 }

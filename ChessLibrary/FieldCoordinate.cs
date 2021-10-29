@@ -48,6 +48,9 @@ namespace ChessLibrary
         /// <returns>Diagonale number starting clockwise relative to the current piece.</returns>
         public int isOnDiagonal(FieldCoordinate coordinate)
         {
+            if (Math.Abs(this.X - coordinate.X) != Math.Abs(this.Y - coordinate.Y))
+                return 0;
+
             int diagonalNum = 0;
 
             for (int i = 0; i < 4; i++)
