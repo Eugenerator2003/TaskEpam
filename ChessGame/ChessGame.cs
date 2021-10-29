@@ -9,7 +9,7 @@ namespace ChessLibrary
     /// <summary>
     /// Class of game of Chess. Contains method to move piece on chessboard and status of chess game.
     /// </summary>
-    public class ChessGame
+    public class Chessgame
     {
         private int check;
         private bool isWhiteMoving;
@@ -22,7 +22,7 @@ namespace ChessLibrary
         /// The check was put on by White if check is 1 and was put on by Black if it's 2.
         /// </summary>
         public int Check { get => check; private set { check = value; } }
-        public Chessboard Board;
+        private Chessboard Board;
         private IChessLogger Logger;
 
         /// <summary>
@@ -89,6 +89,7 @@ namespace ChessLibrary
                     {
                         if (Board.CheckCheckmate(isWhiteMoving, pieceBeating, check))
                         {
+                            Checkmate = true;
                             Logger.Log(pieceOld, fieldCoordinate, ChessStatus.Status.checkmate);
                             return true;
                         }
@@ -113,12 +114,13 @@ namespace ChessLibrary
         /// <summary>
         /// Constructor of chessgame class.
         /// </summary>
-        public ChessGame()
+        public Chessgame()
         {
             ChessPieceFabric.GetStandartComplect(out List<ChessPiece> White, out List<ChessPiece> Black);
             Board = new Chessboard(White, Black);
             isWhiteMoving = true;
             Check = 0;
+            Checkmate = false;
             Logger = new LoggerConsole();
         }
 
@@ -127,7 +129,7 @@ namespace ChessLibrary
         /// </summary>
         /// <param name="LoggerType">Type of logger which will be used(ConsoleLogger / FileLogger).</param>
         /// <param name="PathName">Path to file where logger will be log game info (uses if logger type is file logger)</param>
-        public ChessGame(string LoggerType, string PathName = " ") : this()
+        public Chessgame(string LoggerType, string PathName = " ") : this()
         {
             if (LoggerType == "ConsoleLogger")
             {
@@ -144,6 +146,39 @@ namespace ChessLibrary
                     Logger = new LoggerFile();
                 }
             }
+        }
+
+        /// <summary>
+        /// Method for comparsion current chessgame with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is equal to current chessgame.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is Chessgame chessgame &&
+                   check == chessgame.check &&
+                   isWhiteMoving == chessgame.isWhiteMoving &&
+                   Checkmate == chessgame.Checkmate &&
+                   EqualityComparer<Chessboard>.Default.Equals(Board, chessgame.Board);
+        }
+
+        /// <summary>
+        /// Method for getting hashcode of chessgame.
+        /// </summary>
+        /// <returns>Hashcode of chessgame.</returns>
+        public override int GetHashCode()
+        {
+            return check.GetHashCode() + isWhiteMoving.GetHashCode() + Checkmate.GetHashCode()
+                   + Board.GetHashCode();
+        }
+
+        /// <summary>
+        /// Method for convert from Chessgame to String.
+        /// </summary>
+        /// <returns>Chessgame converted to String.</returns>
+        public override string ToString()
+        {
+            return Board.ToString();
         }
     }
 }

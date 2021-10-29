@@ -11,8 +11,7 @@ namespace ChessLibrary.Tests
         [TestMethod()]
         public void CheckmateIn7MoveTest()
         {
-            //ChessGame game = new ChessGame("FileLogger");
-            ChessGame game = new ChessGame();
+            Chessgame game = new Chessgame();
             FieldCoordinate coordinate1, coordinate2;
 
             coordinate1 = new FieldCoordinate(5, 2);
@@ -70,12 +69,14 @@ namespace ChessLibrary.Tests
             coordinate1 = new FieldCoordinate(4, 4);
             coordinate2 = new FieldCoordinate(6, 3);
             game.MovePiece(coordinate1, coordinate2);
+
+            Assert.IsTrue(game.Checkmate);
         }
 
         [TestMethod()]
         public void ChekmateIn5MovesTest()
         {
-            ChessGame game = new ChessGame();
+            Chessgame game = new Chessgame();
             FieldCoordinate coordinate1, coordinate2;
 
             coordinate1 = new FieldCoordinate(5, 2);
@@ -113,12 +114,14 @@ namespace ChessLibrary.Tests
             coordinate1 = new FieldCoordinate(8, 5);
             coordinate2 = new FieldCoordinate(6, 7);
             game.MovePiece(coordinate1, coordinate2);
+
+            Assert.IsTrue(game.Checkmate);
         }
 
         [TestMethod()]
         public void LegalCheckmateTest()
         {
-            ChessGame game = new ChessGame();
+            Chessgame game = new Chessgame();
             FieldCoordinate coordinate1, coordinate2;
 
             coordinate1 = new FieldCoordinate(5, 2);
@@ -172,12 +175,14 @@ namespace ChessLibrary.Tests
             coordinate1 = new FieldCoordinate(3, 3);
             coordinate2 = new FieldCoordinate(4, 5);
             game.MovePiece(coordinate1, coordinate2);
+
+            Assert.IsTrue(game.Checkmate);
         }
 
         [TestMethod()]
         public void FoolsCheckmateTest()
         {
-            ChessGame game = new ChessGame();
+            Chessgame game = new Chessgame();
             FieldCoordinate coordinate1, coordinate2;
 
             coordinate1 = new FieldCoordinate(7, 2);
@@ -195,12 +200,14 @@ namespace ChessLibrary.Tests
             coordinate1 = new FieldCoordinate(4, 8);
             coordinate2 = new FieldCoordinate(8, 4);
             game.MovePiece(coordinate1, coordinate2);
+
+            Assert.IsTrue(game.Checkmate);
         }
 
         [TestMethod()]
         public void ChildCheckmateTest()
         {
-            ChessGame game = new ChessGame();
+            Chessgame game = new Chessgame();
             FieldCoordinate coordinate1, coordinate2;
 
             coordinate1 = new FieldCoordinate(5, 2);
@@ -230,6 +237,8 @@ namespace ChessLibrary.Tests
             coordinate1 = new FieldCoordinate(8, 5);
             coordinate2 = new FieldCoordinate(6, 7);
             game.MovePiece(coordinate1, coordinate2);
+
+            Assert.IsTrue(game.Checkmate);
         }
     }
 }

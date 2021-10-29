@@ -92,15 +92,6 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
-        /// Method for getting clone object of current rook.
-        /// </summary>
-        /// <returns>Clone object of current rook.</returns>
-        public override object Clone()
-        {
-            return new Rook(this.Coordinate, this.PieceColor);
-        }
-
-        /// <summary>
         /// Method for comparsion current rook with other object.
         /// </summary>
         /// <param name="obj">Object</param>
@@ -108,6 +99,24 @@ namespace ChessLibrary.ChessPieces
         public override bool Equals(object obj)
         {
             return obj is Rook rook && rook.Coordinate == this.Coordinate && rook.PieceColor == this.PieceColor;
+        }
+
+        /// <summary>
+        /// Method for getting hash code of rook.
+        /// </summary>
+        /// <returns>Hash code of rook.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        /// <summary>
+        /// Method for getting clone object of current rook.
+        /// </summary>
+        /// <returns>Clone object of current rook.</returns>
+        public override object Clone()
+        {
+            return new Rook(this.Coordinate, this.PieceColor);
         }
     }
 }

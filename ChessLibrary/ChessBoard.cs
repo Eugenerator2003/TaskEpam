@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using ChessLibrary.ChessPieces;
 
@@ -414,6 +415,64 @@ namespace ChessLibrary
             {
                 this[coordinate.X, coordinate.Y] = value;
             }
+        }
+
+        /// <summary>
+        /// Method for comparsion current chessboard with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is equal to current chessboard.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            Chessboard board = obj as Chessboard;
+            if (board is null)
+                return false;
+            bool isEqual = true;
+            for (int i = 1; i < 9; i++)
+            {
+                for (int j = 1; i < 9; i++)
+                {
+                    if (!this[i, j].Equals(board[i, j]))
+                    {
+                        isEqual = false;
+                        break;
+                    }
+                }
+            }
+            return isEqual;   
+        }
+
+        /// <summary>
+        /// Method for getting hash code of chessboard.
+        /// </summary>
+        /// <returns>Hash code of chessboard.</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = 0;
+            foreach(ChessPiece piece in board)
+            {
+                hashCode += piece.GetHashCode();
+            }
+            return hashCode;
+        }
+
+        /// <summary>
+        /// Method for convert from Chessboard to String.
+        /// </summary>
+        /// <returns>Coordinate of current piece.</returns>
+        public override string ToString()
+        {
+            StringBuilder text = new StringBuilder("");
+            foreach(ChessPiece piece in board)
+            {
+                if (piece != null)
+                {
+                    text.Append($"{piece} ");
+                }
+            }
+            return Convert.ToString(text);
         }
     }
 }

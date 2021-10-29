@@ -116,7 +116,15 @@ namespace ChessLibrary.ChessPieces
             return "B" + base.ToString();
         }
 
-        
+        /// <summary>
+        /// Method for getting hash code of bishop.
+        /// </summary>
+        /// <returns>Hash code of bishop.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
 
         /// <summary>
         /// Method for getting clone object of current bishop.
@@ -135,14 +143,6 @@ namespace ChessLibrary.ChessPieces
         public override bool Equals(object obj)
         {
             return obj is Bishop bishop && bishop.Coordinate == this.Coordinate && bishop.PieceColor == this.PieceColor;
-        }
-
-        public override int GetHashCode()
-        {
-            int hashCode = -1219036983;
-            hashCode = hashCode * -1521134295 + PieceColor.GetHashCode();
-            hashCode = hashCode * -1521134295 + Coordinate.GetHashCode();
-            return hashCode;
         }
     }
 }

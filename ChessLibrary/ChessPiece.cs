@@ -94,7 +94,7 @@ namespace ChessLibrary.ChessPieces
         /// <summary>
         /// Method for convert from ChessPiece to String.
         /// </summary>
-        /// <returns>Coordinate of current piece.</returns>
+        /// <returns>ChessPiece converted to String.</returns>
         public override string ToString()
         {
             return $"{Coordinate}";
@@ -113,15 +113,12 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
-        /// Method for getting hash code of current piece.
+        /// Method for getting hash code of piece.
         /// </summary>
-        /// <returns>Hash code of current piece.</returns>
+        /// <returns>Hash code of piece.</returns>
         public override int GetHashCode()
         {
-            int hashCode = -1650298685;
-            hashCode = hashCode * -1521134295 + PieceColor.GetHashCode();
-            hashCode = hashCode * -1521134295 + Coordinate.GetHashCode();
-            return hashCode;
+            return PieceColor.GetHashCode() + Coordinate.GetHashCode();
         }
 
         /// <summary>

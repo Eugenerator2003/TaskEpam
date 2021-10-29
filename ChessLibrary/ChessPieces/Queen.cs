@@ -150,6 +150,15 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
+        /// Method for getting hash code of queen.
+        /// </summary>
+        /// <returns>Hash code of queen.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        /// <summary>
         /// Method for getting clone object of current queen.
         /// </summary>
         /// <returns>Clone object of current queen.</returns>

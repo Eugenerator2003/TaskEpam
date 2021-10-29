@@ -156,6 +156,15 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
+        /// Method for getting hash code of pawn.
+        /// </summary>
+        /// <returns>Hash code of pawn.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        /// <summary>
         /// Method for getting clone object of current pawn.
         /// </summary>
         /// <returns>Clone object of current pawn.</returns>

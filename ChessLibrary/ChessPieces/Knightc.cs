@@ -84,6 +84,15 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
+        /// Method for getting hash code of knight.
+        /// </summary>
+        /// <returns>Hash code of knight.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        /// <summary>
         /// Method for getting clone object of current knight.
         /// </summary>
         /// <returns>Clone object of current knight.</returns>

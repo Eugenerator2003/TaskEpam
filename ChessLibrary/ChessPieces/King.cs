@@ -91,6 +91,15 @@ namespace ChessLibrary.ChessPieces
         }
 
         /// <summary>
+        /// Method for getting hash code of king.
+        /// </summary>
+        /// <returns>Hash code of king.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        /// <summary>
         /// Method for getting clone object of current king.
         /// </summary>
         /// <returns>Clone object of current king.</returns>
