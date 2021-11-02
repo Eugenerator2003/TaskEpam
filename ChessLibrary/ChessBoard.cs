@@ -120,15 +120,27 @@ namespace ChessLibrary
         /// Method for checking the checkmate in current game situation.
         /// </summary>
         /// <param name="isWhiteMoving">Does White play this move.</param>
-        /// <param name="pieceBeating">A chess piece beating one of the Kings.</param>
+        /// <param name="pieceBeating">A chess piece thats beats one of the King.</param>
         /// <param name="check">Check status.</param>
         /// <returns>True if game situation is can to continue from this move.</returns>
         public bool CheckCheckmate(bool isWhiteMoving, ChessPiece pieceBeating, int check)
         {
+            return !(_CanMoveFromCheck(isWhiteMoving, check)
+                    || _CanBeatBeatingPiece(isWhiteMoving, pieceBeating, check)
+                    || _CanMoveBetweenPieceBeatingAndKing(isWhiteMoving, pieceBeating, check));
+        }
+
+        /// <summary>
+        /// Method for checking king possibility to move from check;
+        /// </summary>
+        /// <param name="check">Check status.</param>
+        /// <param name="isWhiteMoving">Does white play this move.</param>
+        /// <returns>True if King can to move from check.</returns>
+        private bool _CanMoveFromCheck(bool isWhiteMoving, int check)
+        {
+            bool isCanMove = false;
             int checkOld = check;
-            bool checkmate = true;
             ChessPiece king = (check == 1) ? blackKing : whiteKing;
-            List<ChessPiece> currentSet = (check == 1) ? Black : White;
             ChessPiece kingOld = (ChessPiece)king.Clone();
             FieldCoordinate kingCoordinate = king.Coordinate;
             FieldCoordinate escapeCoordinates;
@@ -162,11 +174,10 @@ namespace ChessLibrary
                     king = (ChessPiece)kingOld.Clone();
                     AddPiece(king);
                     _SetKing(king);
-                    this[kingCoordinate] = kingOld;
                     if (isCanMoveFromCheck)
                     {
                         check = checkOld;
-                        checkmate = false;
+                        isCanMove = false;
                         break;
                     }
 
@@ -175,40 +186,59 @@ namespace ChessLibrary
             RemovePiece(king);
             AddPiece(kingOld);
             _SetKing(kingOld);
-            this[kingCoordinate] = kingOld;
-            king = kingOld;
+            return isCanMove;
+        }
 
-            if (checkmate)
+        /// <summary>
+        /// Method for checking current pieces possibility to beat piece that beats the King.
+        /// </summary>
+        /// <param name="pieceBeating">A chess piece beating one of the Kings.</param>
+        /// <param name="check">Check status.</param>
+        /// <param name="isWhiteMoving">Does White play this move.</param>
+        /// <returns>True if any current piece can to beat piece that beats the King.</returns>
+        private bool _CanBeatBeatingPiece(bool isWhiteMoving, ChessPiece pieceBeating, int check)
+        {
+            bool isCanBeat = false;
+            List<ChessPiece> currentSet = (check == 1) ? Black : White;
+            for (int i = 0; i < currentSet.Count; i++)
             {
-                for (int i = 0; i < currentSet.Count; i++)
+                if (this.CanMoveOnBoard(currentSet[i], pieceBeating.Coordinate))
                 {
-                    bool isCanBeat = false;
-                    if (this.CanMoveOnBoard(currentSet[i], pieceBeating.Coordinate))
+                    ChessPiece currentPieceOld = (ChessPiece)currentSet[i].Clone();
+                    currentSet[i].MoveTo(pieceBeating.Coordinate);
+                    RemovePiece(pieceBeating);
+                    if (this.CheckTheCheck(isWhiteMoving, out ChessPiece temp, ref check))
                     {
-                        ChessPiece currentPieceOld = (ChessPiece)currentSet[i].Clone();
-                        currentSet[i].MoveTo(pieceBeating.Coordinate);
-                        RemovePiece(pieceBeating);
-                        if (this.CheckTheCheck(isWhiteMoving, out ChessPiece temp, ref check))
-                        {
-                            isCanBeat = true;
-                        }
-                        currentSet[i] = currentPieceOld;
-                        AddPiece(pieceBeating);
+                        isCanBeat = true;
                     }
-                    if (isCanBeat)
-                    {
-                        checkmate = false;
-                        break;
-                    }
+                    currentSet[i] = currentPieceOld;
+                    AddPiece(pieceBeating);
+                }
+                if (isCanBeat)
+                {
+                    break;
                 }
             }
+            return isCanBeat;
+        }
 
-            if (checkmate && !(pieceBeating is Knight))
+        /// <summary>
+        /// Method for checking current pieces possibility to move to cell between King and piece thats hits him.
+        /// </summary>
+        /// <param name="pieceBeating">A chess piece beating one of the Kings.</param>
+        /// <param name="check">Check status.</param>
+        /// <param name="isWhiteMoving">Does White play this move.</param>
+        /// <returns>True if any current piece can stand between the King and piece that beats him.</returns>
+        private bool _CanMoveBetweenPieceBeatingAndKing(bool isWhiteMoving, ChessPiece pieceBeating, int check)
+        {
+            bool isCanMove = false;
+            ChessPiece king = (check == 1) ? blackKing : whiteKing;
+            List<ChessPiece> currentSet = (check == 1) ? Black : White;
+            if (!(pieceBeating is Knight))
             {
                 List<FieldCoordinate> coordinateBetween = _GetFreeCoordinatesBetween(king.Coordinate, pieceBeating.Coordinate);
                 for (int i = 0; i < currentSet.Count; i++)
                 {
-                    bool canMove = false;
                     foreach (FieldCoordinate coordinate in coordinateBetween)
                     {
                         if (this.CanMoveOnBoard(currentSet[i], coordinate) && currentSet[i] != king)
@@ -220,25 +250,24 @@ namespace ChessLibrary
                             this[coordinate] = currentSet[i];
                             if (this.CheckTheCheck(isWhiteMoving, out ChessPiece temp, ref check))
                             {
-                                canMove = true;
+                                isCanMove = true;
                             }
-                            this[coordinatePieceOld] = pieceOld;
-                            this[coordinate] = null;
                             RemovePiece(currentSet[i]);
                             AddPiece(pieceOld);
+                            if  (isCanMove)
+                            {
+                                break;
+                            }
                         }
                     }
-                    if (canMove)
+                    if (isCanMove)
                     {
-                        checkmate = false;
                         break;
                     }
                 }
             }
-
-            return checkmate;
+            return isCanMove;
         }
-
 
         /// <summary>
         /// Method for getting collection of field coordinate between two of cells.

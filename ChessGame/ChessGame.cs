@@ -22,8 +22,8 @@ namespace ChessLibrary
         /// The check was put on by White if check is 1 and was put on by Black if it's 2.
         /// </summary>
         public int Check { get => check; private set { check = value; } }
-        private Chessboard Board;
-        private IChessLogger Logger;
+        private Chessboard board;
+        private IChessLogger logger;
 
         /// <summary>
         /// Method to move piece on chessboard.
@@ -37,12 +37,12 @@ namespace ChessLibrary
                 return false;
             bool wasMoved = false;
             ChessPiece.Color currentColor = isWhiteMoving ? ChessPiece.Color.White : ChessPiece.Color.Black;
-            ChessPiece piece = Board[pieceCoordinate];
-            ChessPiece takedPiece = Board[fieldCoordinate];
+            ChessPiece piece = board[pieceCoordinate];
+            ChessPiece takedPiece = board[fieldCoordinate];
             ChessPiece pieceOld = (ChessPiece)piece.Clone();
             if (piece != null && piece?.PieceColor == currentColor && takedPiece?.PieceColor != currentColor)
             {
-                if (Board.CanMoveOnBoard(piece, fieldCoordinate))
+                if (board.CanMoveOnBoard(piece, fieldCoordinate))
                 {
                     if (piece is Pawn)
                     {
@@ -71,40 +71,40 @@ namespace ChessLibrary
             {
                 if (takedPiece != null)
                 {
-                    Board.RemovePiece(takedPiece);
+                    board.RemovePiece(takedPiece);
                 }
-                if (Board.CheckTheCheck(isWhiteMoving, out ChessPiece pieceBeating, ref check))
+                if (board.CheckTheCheck(isWhiteMoving, out ChessPiece pieceBeating, ref check))
                 {
                     if (piece is Pawn && (fieldCoordinate.Y == 1 || fieldCoordinate.Y == 8))
                     {
 
-                        Board[fieldCoordinate] = new Queen(fieldCoordinate, currentColor);
+                        board[fieldCoordinate] = new Queen(fieldCoordinate, currentColor);
                     }
                     else
                     {
-                        Board[fieldCoordinate] = piece;
+                        board[fieldCoordinate] = piece;
                     }
-                    Board[pieceCoordinate] = null;
+                    board[pieceCoordinate] = null;
                     if (Check != 0)
                     {
-                        if (Board.CheckCheckmate(isWhiteMoving, pieceBeating, check))
+                        if (board.CheckCheckmate(isWhiteMoving, pieceBeating, check))
                         {
                             Checkmate = true;
-                            Logger.Log(pieceOld, fieldCoordinate, ChessStatus.Status.checkmate);
+                            logger.Log(pieceOld, fieldCoordinate, ChessStatus.Status.checkmate);
                             return true;
                         }
                     }
                     isWhiteMoving = isWhiteMoving ? false : true;
-                    Logger.Log(pieceOld, fieldCoordinate, (Check != 0) ? ChessStatus.Status.check : ChessStatus.Status.nothing);
+                    logger.Log(pieceOld, fieldCoordinate, (Check != 0) ? ChessStatus.Status.check : ChessStatus.Status.nothing);
                 }
                 else
                 {
-                    Board.RemovePiece(piece);
-                    Board.AddPiece(pieceOld);
+                    board.RemovePiece(piece);
+                    board.AddPiece(pieceOld);
                     if (takedPiece != null)
                     {
-                        Board[pieceCoordinate] = pieceOld;
-                        Board.AddPiece(takedPiece);
+                        board[pieceCoordinate] = pieceOld;
+                        board.AddPiece(takedPiece);
                     }
                 }
             }
@@ -117,11 +117,11 @@ namespace ChessLibrary
         public Chessgame()
         {
             ChessPieceFabric.GetStandartComplect(out List<ChessPiece> White, out List<ChessPiece> Black);
-            Board = new Chessboard(White, Black);
+            board = new Chessboard(White, Black);
             isWhiteMoving = true;
             Check = 0;
             Checkmate = false;
-            Logger = new LoggerConsole();
+            logger = new LoggerConsole();
         }
 
         /// <summary>
@@ -133,17 +133,17 @@ namespace ChessLibrary
         {
             if (LoggerType == "ConsoleLogger")
             {
-                Logger = new LoggerConsole();
+                logger = new LoggerConsole();
             }
             else if (LoggerType == "FileLogger")
             {
                 if (PathName != " ")
                 {
-                    Logger = new LoggerFile(PathName);
+                    logger = new LoggerFile(PathName);
                 }
                 else
                 {
-                    Logger = new LoggerFile();
+                    logger = new LoggerFile();
                 }
             }
         }
@@ -159,7 +159,7 @@ namespace ChessLibrary
                    check == chessgame.check &&
                    isWhiteMoving == chessgame.isWhiteMoving &&
                    Checkmate == chessgame.Checkmate &&
-                   EqualityComparer<Chessboard>.Default.Equals(Board, chessgame.Board);
+                   EqualityComparer<Chessboard>.Default.Equals(board, chessgame.board);
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace ChessLibrary
         public override int GetHashCode()
         {
             return check.GetHashCode() + isWhiteMoving.GetHashCode() + Checkmate.GetHashCode()
-                   + Board.GetHashCode();
+                   + board.GetHashCode();
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace ChessLibrary
         /// <returns>Chessgame converted to String.</returns>
         public override string ToString()
         {
-            return Board.ToString();
+            return board.ToString();
         }
     }
 }
