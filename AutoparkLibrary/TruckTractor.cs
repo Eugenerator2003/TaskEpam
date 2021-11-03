@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Autopark.Products;
-using Autopark.Exceptions;
+using AutoparkLibrary.Products;
+using AutoparkLibrary.Exceptions;
 
-namespace Autopark.Transport
+namespace AutoparkLibrary.Transport
 {
     public class TruckTractor
     {
+        private readonly double fuelConsumptionPerKG;
+        private readonly double weight;
         public string GarageID { get; private set; }
         public static int TruckQuantity{ get; private set; }
         public Semitrailer Semitrailer { get; private set; }
-        public int SemitrailerCapacity { get; private set; }
-
         public double MaxLoadedSemitrailerWeight { get; }
         
+
         public void AttachSemitrailer(Semitrailer semitrailer)
         {
             if (MaxLoadedSemitrailerWeight >= semitrailer.SemitrailerWeight + semitrailer.GetProductsWeight())
@@ -40,34 +41,53 @@ namespace Autopark.Transport
             Semitrailer = null;
         }
 
-        public bool Upload(Product product)
+        public void Upload(Product product)
         {
             if (Semitrailer == null)
                 throw new NoTrailerException("Truck doesn't have a trailer");
-            return Semitrailer.Upload(product);
+            Semitrailer.Upload(product); 
         }
 
-        public bool Unload(Product product)
+        public void Unload(Product product, out Product productUnloaded)
         {
             if (Semitrailer == null)
                 throw new NoTrailerException("Truck doesn't have a trailer");
-            return Semitrailer.Upload(product);
+            Semitrailer.Unload(product, out productUnloaded);
         }
 
-        public TruckTractor(string garageId)
+        public TruckTractor(string garageId, double weight, double maxLoadedSemitrailerWeight, double fuelConsumptionPerKG)
         {
-            this.GarageID = garageId;
+            GarageID = garageId;
+            this.fuelConsumptionPerKG = fuelConsumptionPerKG;
+            this.weight = weight;
+            MaxLoadedSemitrailerWeight = maxLoadedSemitrailerWeight;
             TruckQuantity++;
         }
 
-        public TruckTractor(string garageId, Semitrailer semitrailer) : this(garageId)
+        public TruckTractor(string garageId, double weight, double maxLoadedSemitrailerWeight, double fuelConsumptionPerKG, Semitrailer semitrailer)
+                            : this(garageId, weight, maxLoadedSemitrailerWeight, fuelConsumptionPerKG)
         {
             AttachSemitrailer(semitrailer);
         }
 
-        public TruckTractor(string garageId, Semitrailer semitrailer, Product product) : this(garageId, semitrailer)
+        public TruckTractor(string garageId, double weight, double maxLoadedSemitrailerWeight, double fuelConsumptionPerKG, Semitrailer semitrailer, Product product)
+            : this(garageId, weight, maxLoadedSemitrailerWeight, fuelConsumptionPerKG, semitrailer)
         {
             Semitrailer.Upload(product);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            TruckTractor truck = obj as TruckTractor;
+            if (truck == null)
+                return false;
+            bool semitrailersEqual = this.Semitrailer == null && truck.Semitrailer == null ? true : this.Semitrailer.Equals(truck.Semitrailer);
+            return this.weight == truck.weight
+                   && this.MaxLoadedSemitrailerWeight == truck.MaxLoadedSemitrailerWeight
+                   && this.fuelConsumptionPerKG == truck.fuelConsumptionPerKG
+                   && semitrailersEqual;
         }
     }
 }

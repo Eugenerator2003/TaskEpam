@@ -7,8 +7,8 @@
     <ProjectGuid>{37D863E9-3817-489D-8C0A-91CCD4993A0E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Transport</RootNamespace>
-    <AssemblyName>Transport</AssemblyName>
+    <RootNamespace>AutoparkLibrary</RootNamespace>
+    <AssemblyName>AutoparkLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -45,6 +45,9 @@
     <Compile Include="Semitrailer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AutoparkExceptions.cs" />
+    <Compile Include="Semitrailers\RefrigiratorSemitrailer.cs" />
+    <Compile Include="Semitrailers\TankSemitrailer.cs" />
+    <Compile Include="Semitrailers\TiltSemitrailer.cs" />
     <Compile Include="TruckTractor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

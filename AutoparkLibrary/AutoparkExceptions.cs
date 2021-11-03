@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Autopark.Exceptions
+namespace AutoparkLibrary.Exceptions
 {
     class NoTrailerException : Exception
     {
@@ -41,39 +41,75 @@ namespace Autopark.Exceptions
         }
     }
 
-    class InvalidCargoException : Exception
+    class InvalidProductStorageConditionException : Exception
     {
-        public const string Message = "The semitrailer cannot be loaded with this type of cargo";
 
-        public InvalidCargoException()
+        public InvalidProductStorageConditionException()
         {
         }
 
-        public InvalidCargoException(string message) : base(message)
+        public InvalidProductStorageConditionException(string message) : base(message)
         {
         }
 
-        public InvalidCargoException(string message, Exception innerException) : base(message, innerException)
+        public InvalidProductStorageConditionException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
     }
 
-    class CargoWeightOverflowException : Exception
+    class SemitrailleMaxDimensionsOverflowException : Exception
     {
-        public const string Message = "The semitrailer cannot be loaded with weight of this cargo";
 
-        public CargoWeightOverflowException()
+        public SemitrailleMaxDimensionsOverflowException()
         {
         }
 
-        public CargoWeightOverflowException(string message) : base(message)
+        public SemitrailleMaxDimensionsOverflowException(string message) : base(message)
         {
         }
 
-        public CargoWeightOverflowException(string message, Exception innerException) : base(message, innerException)
+        public SemitrailleMaxDimensionsOverflowException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
+    }
+
+    class NoProductsLoadedException : Exception
+    {
+        public NoProductsLoadedException()
+        {
+        }
+
+        public NoProductsLoadedException(string message) : base(message)
+        {
+        }
+
+        public NoProductsLoadedException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected NoProductsLoadedException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
+
+    class InvalidProductTypeException : Exception
+    {
+        public InvalidProductTypeException()
+        {
+        }
+
+        public InvalidProductTypeException(string message) : base(message)
+        {
+        }
+
+        public InvalidProductTypeException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected InvalidProductTypeException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 }

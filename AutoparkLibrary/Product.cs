@@ -4,30 +4,59 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Autopark.Products
+namespace AutoparkLibrary.Products
 {
-    public class Product
+    public class Product : ICloneable
     {
-
-        public enum CargoType
+        public enum StorageCondition
         {
-
+            Box,
+            Liquid,
+            Thermal
         }
 
-        public CargoType Type { get; }
+        public enum ProductType
+        {
+            Food,
+            Chemistry,
+            HouseAppliences,
+            Fuel
+        }
+
+        public StorageCondition Condition { get; }
+
+        public ProductType Type { get; }
 
         public string Name { get; }
 
-        public double Weight { get; private set; }
+        public double Weight { get; }
 
-        public double Volume { get; private set; }
+        public double Volume { get; }
 
-        public Product(string name, CargoType type, double weight, double volume)
+        public double TemperatureMin { get; }
+
+        public double TemperatureMax { get; }
+
+        public Product(string name, ProductType type, StorageCondition condition, double weight, double volume)
         {
             Name = name;
             Weight = weight;
             Volume = volume;
+            Condition = condition;
             Type = type;
+        }
+
+        public Product(string name, ProductType type, StorageCondition condition, double weight, double volume, double temp_min, double temp_max)
+                 : this(name, type, condition, weight, volume)
+        {
+            TemperatureMin = temp_max;
+            TemperatureMax = temp_min;
+        }
+
+        public object Clone()
+        {
+            Product product = new Product(Name, Type, Condition, Weight, Volume);
+            return (object)product;
         }
     }
 }
