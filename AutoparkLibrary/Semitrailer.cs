@@ -10,7 +10,16 @@ namespace AutoparkLibrary.Transport
 {
     public abstract class Semitrailer
     {
-        public string ID { get; private set; }
+        public enum SemitrailerType
+        {
+            TiltSemitrailer,
+            TankSemitrailer,
+            RefrigiratorSemitrailer
+        }
+
+        public SemitrailerType Type { get; protected set; }
+
+        public string GarageID { get; private set; }
         public int SemitrailerQuantity { get; protected set; }
         public TruckTractor Truck { get; protected set; }
         public double SemitrailerWeight { get; }
@@ -19,11 +28,11 @@ namespace AutoparkLibrary.Transport
         public double FreeProductsVolume { get; protected set; }
         public double FreeProductsWeight { get; protected set; }
 
-        protected List<Product> products = new List<Product>();
+        public List<Product> Products = new List<Product>();
 
         public void AttachTruck(TruckTractor truck)
         {
-            if (SemitrailerWeight + GetProductsWeight() <= truck.MaxLoadedSemitrailerWeight)
+            if (SemitrailerWeight + GetProductsWeight() <= truck.CarryingCapacity)
             {
                 if (Truck != null)
                 {
@@ -55,14 +64,14 @@ namespace AutoparkLibrary.Transport
 
         protected void AddProduct(Product product)
         {
-            products.Add(product);
+            Products.Add(product);
             FreeProductsWeight -= product.Weight;
             FreeProductsVolume -= product.Volume;
         }
 
         protected void RemoveProduct(Product product)
         {
-            products.Remove(product);
+            Products.Remove(product);
             FreeProductsWeight += product.Weight;
             FreeProductsVolume += product.Volume;
         }
@@ -77,14 +86,14 @@ namespace AutoparkLibrary.Transport
             return MaxProductsVolume - FreeProductsVolume;
         }
 
-        public Semitrailer(string ID, double semitrailerWeight, double maxProductWeight, double maxProductVolume)
+        public Semitrailer(string ID, double semitrailerWeight, double maxProductsWeight, double maxProductsVolume)
         {
-            this.ID = ID;
+            this.GarageID = ID;
             SemitrailerWeight = semitrailerWeight;
-            MaxProductsWeight = maxProductWeight;
-            MaxProductsVolume = maxProductVolume;
-            FreeProductsVolume = maxProductVolume;
-            FreeProductsWeight = maxProductWeight;
+            MaxProductsWeight = maxProductsWeight;
+            MaxProductsVolume = maxProductsVolume;
+            FreeProductsVolume = maxProductsVolume;
+            FreeProductsWeight = maxProductsWeight;
         }
 
         public override bool Equals(object obj)
@@ -95,11 +104,11 @@ namespace AutoparkLibrary.Transport
             if (semitrailer == null)
                 return false;
             bool productsEqual = true;
-            if (products.Count == semitrailer.products.Count)
+            if (Products.Count == semitrailer.Products.Count)
             {
-                for (int i = 0; i < products.Count; i++)
+                for (int i = 0; i < Products.Count; i++)
                 {
-                    if (!products[i].Equals(semitrailer.products[i]))
+                    if (!Products[i].Equals(semitrailer.Products[i]))
                     {
                         productsEqual = false;
                         break;

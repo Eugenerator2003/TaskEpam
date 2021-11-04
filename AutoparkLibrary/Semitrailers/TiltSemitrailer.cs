@@ -13,9 +13,9 @@ namespace AutoparkLibrary.Transport
         private Product.ProductType type;
         public override void Upload(Product product)
         {
-            if (product.Condition != Product.StorageCondition.Box)
+            if (product.StorageCondition != Product.ConditionOfStorage.Box)
                 throw new InvalidProductStorageConditionException("The semi-trailer can be loaded only with product with box storage condition");
-            if (products.Count > 0 && product.Type != type)
+            if (Products.Count > 0 && product.Type != type)
                 throw new InvalidProductTypeException("The semi-trailer has products with another product type");
             if (product.Volume <= FreeProductsVolume && product.Weight <= FreeProductsWeight)
             {
@@ -24,7 +24,7 @@ namespace AutoparkLibrary.Transport
                     AddProduct(product);
                     type = product.Type;
                 }
-                else if (GetProductsWeight() + SemitrailerWeight + product.Weight <= Truck.MaxLoadedSemitrailerWeight)
+                else if (GetProductsWeight() + SemitrailerWeight + product.Weight <= Truck.CarryingCapacity)
                 {
                     AddProduct(product);
                     type = product.Type;
@@ -38,12 +38,12 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(out List<Product> productsUnloaded)
         {
-            if (products.Count > 0)
+            if (Products.Count > 0)
             {
                 productsUnloaded = new List<Product>();
-                foreach (Product product in products)
+                foreach (Product product in Products)
                     productsUnloaded.Add(product);
-                products.Clear();
+                Products.Clear();
                 FreeProductsVolume = MaxProductsVolume;
                 FreeProductsWeight = MaxProductsWeight;
             }
@@ -53,7 +53,7 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(Product product, double partPercent, out Product productUnloaded)
         {
-            if (products.Contains(product))
+            if (Products.Contains(product))
             {
                 RemoveProduct(product);
                 productUnloaded = null;
@@ -63,8 +63,8 @@ namespace AutoparkLibrary.Transport
                 }
                 else if (partPercent > 100 || partPercent <= 0)
                 {
-                    productUnloaded = new Product(product.Name, product.Type, product.Condition, product.Weight * partPercent / 100, product.Volume * partPercent / 100);
-                    Product productLoded = new Product(product.Name, product.Type, product.Condition, product.Weight * (100 - partPercent) / partPercent, product.Volume * (100 - partPercent) / 100);
+                    productUnloaded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * partPercent / 100, product.Volume * partPercent / 100);
+                    Product productLoded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * (100 - partPercent) / partPercent, product.Volume * (100 - partPercent) / 100);
                     AddProduct(productLoded);
                 }
                 else
@@ -82,6 +82,7 @@ namespace AutoparkLibrary.Transport
         public TiltSemitrailer(string ID, double semitrailerWeight, double maxProductWeight, double maxProductVolume)
                : base(ID, semitrailerWeight, maxProductWeight, maxProductVolume)
         {
+            Type = SemitrailerType.TiltSemitrailer;
         }
     }
 }

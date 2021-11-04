@@ -10,17 +10,16 @@ namespace AutoparkLibrary.Transport
 {
     public class TruckTractor
     {
-        private readonly double fuelConsumptionPerKG;
-        private readonly double weight;
-        public string GarageID { get; private set; }
+        public readonly double FuelConsumption;
+        public string GarageID { get; }
+        public string Model { get; }
         public static int TruckQuantity{ get; private set; }
         public Semitrailer Semitrailer { get; private set; }
-        public double MaxLoadedSemitrailerWeight { get; }
-        
+        public double CarryingCapacity { get; }
 
         public void AttachSemitrailer(Semitrailer semitrailer)
         {
-            if (MaxLoadedSemitrailerWeight >= semitrailer.SemitrailerWeight + semitrailer.GetProductsWeight())
+            if (CarryingCapacity >= semitrailer.SemitrailerWeight + semitrailer.GetProductsWeight())
             {
                 if (Semitrailer != null)
                 {
@@ -55,25 +54,25 @@ namespace AutoparkLibrary.Transport
             Semitrailer.Unload(product, out productUnloaded);
         }
 
-        public TruckTractor(string garageId, double weight, double maxLoadedSemitrailerWeight, double fuelConsumptionPerKG)
+        public double GetFuelConsumption()
+        {
+            double semitrailerWeight = (Semitrailer == null) ? 0 : Semitrailer.SemitrailerWeight + Semitrailer.GetProductsWeight();
+            return FuelConsumption * semitrailerWeight;
+        }
+
+        public TruckTractor(string garageId, string model, double maxLoadedSemitrailerWeight, double fuelConsumption)
         {
             GarageID = garageId;
-            this.fuelConsumptionPerKG = fuelConsumptionPerKG;
-            this.weight = weight;
-            MaxLoadedSemitrailerWeight = maxLoadedSemitrailerWeight;
+            Model = model;
+            this.FuelConsumption = fuelConsumption;
+            CarryingCapacity = maxLoadedSemitrailerWeight;
             TruckQuantity++;
         }
 
-        public TruckTractor(string garageId, double weight, double maxLoadedSemitrailerWeight, double fuelConsumptionPerKG, Semitrailer semitrailer)
-                            : this(garageId, weight, maxLoadedSemitrailerWeight, fuelConsumptionPerKG)
+        public TruckTractor(string garageId, string model, double maxLoadedSemitrailerWeight, double fuelConsumption, Semitrailer semitrailer)
+                            : this(garageId, model, maxLoadedSemitrailerWeight, fuelConsumption)
         {
             AttachSemitrailer(semitrailer);
-        }
-
-        public TruckTractor(string garageId, double weight, double maxLoadedSemitrailerWeight, double fuelConsumptionPerKG, Semitrailer semitrailer, Product product)
-            : this(garageId, weight, maxLoadedSemitrailerWeight, fuelConsumptionPerKG, semitrailer)
-        {
-            Semitrailer.Upload(product);
         }
 
         public override bool Equals(object obj)
@@ -84,9 +83,9 @@ namespace AutoparkLibrary.Transport
             if (truck == null)
                 return false;
             bool semitrailersEqual = this.Semitrailer == null && truck.Semitrailer == null ? true : this.Semitrailer.Equals(truck.Semitrailer);
-            return this.weight == truck.weight
-                   && this.MaxLoadedSemitrailerWeight == truck.MaxLoadedSemitrailerWeight
-                   && this.fuelConsumptionPerKG == truck.fuelConsumptionPerKG
+            return this.Model == truck.Model
+                   && this.CarryingCapacity == truck.CarryingCapacity
+                   && this.FuelConsumption == truck.FuelConsumption
                    && semitrailersEqual;
         }
     }

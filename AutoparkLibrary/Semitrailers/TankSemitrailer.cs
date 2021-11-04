@@ -14,7 +14,7 @@ namespace AutoparkLibrary.Transport
 
         public override void Upload(Product product)
         {
-            if (product.Condition != Product.StorageCondition.Liquid)
+            if (product.StorageCondition != Product.ConditionOfStorage.Liquid)
                 throw new InvalidProductStorageConditionException("The semi-trailer can be loaded only with liquid product");
             if (product.Volume <= FreeProductsVolume && product.Weight <= FreeProductsWeight)
             {
@@ -25,7 +25,7 @@ namespace AutoparkLibrary.Transport
                         AddProduct(product);
                         liquidName = product.Name;
                     }
-                    else if (GetProductsWeight() + SemitrailerWeight + product.Weight <= Truck.MaxLoadedSemitrailerWeight)
+                    else if (GetProductsWeight() + SemitrailerWeight + product.Weight <= Truck.CarryingCapacity)
                     {
                         AddProduct(product);
                         liquidName = product.Name;
@@ -37,15 +37,15 @@ namespace AutoparkLibrary.Transport
                 {
                     if (product.Name == liquidName)
                     {
-                        Product productWhole = new Product(product.Name, product.Type, product.Condition, products[0].Weight + product.Weight, products[0].Volume + product.Volume);
+                        Product productWhole = new Product(product.Name, product.Type, product.StorageCondition, Products[0].Weight + product.Weight, Products[0].Volume + product.Volume);
                         if (Truck == null)
                         {
-                            RemoveProduct(products[0]);
+                            RemoveProduct(Products[0]);
                             AddProduct(productWhole);
                         }
-                        else if (GetProductsWeight() + SemitrailerWeight + product.Weight <= Truck.MaxLoadedSemitrailerWeight)
+                        else if (GetProductsWeight() + SemitrailerWeight + product.Weight <= Truck.CarryingCapacity)
                         {
-                            RemoveProduct(products[0]);
+                            RemoveProduct(Products[0]);
                             AddProduct(productWhole);
                         }
                         else
@@ -61,11 +61,11 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(out List<Product> productsUnloaded)
         {
-            if (products.Count > 0)
+            if (Products.Count > 0)
             {
                 productsUnloaded = new List<Product>();
-                productsUnloaded.Add(products[0]);
-                products.Clear();
+                productsUnloaded.Add(Products[0]);
+                Products.Clear();
                 FreeProductsVolume = MaxProductsVolume;
                 FreeProductsWeight = MaxProductsWeight;
                 liquidName = "";
@@ -81,7 +81,7 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(Product product, double partPercent, out Product productUnloaded)
         {
-            if (products.Contains(product))
+            if (Products.Contains(product))
             {
                 RemoveProduct(product);
                 productUnloaded = null;
@@ -92,8 +92,8 @@ namespace AutoparkLibrary.Transport
                 }
                 else if (partPercent > 100 || partPercent <= 0)
                 {
-                    productUnloaded = new Product(product.Name, product.Type, product.Condition, product.Weight * partPercent / 100, product.Volume * partPercent / 100);
-                    Product productLoded = new Product(product.Name, product.Type, product.Condition, product.Weight * (100 - partPercent) / partPercent, product.Volume * (100 - partPercent) / 100);
+                    productUnloaded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * partPercent / 100, product.Volume * partPercent / 100);
+                    Product productLoded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * (100 - partPercent) / partPercent, product.Volume * (100 - partPercent) / 100);
                     AddProduct(productLoded);
                 }
                 else
@@ -106,6 +106,7 @@ namespace AutoparkLibrary.Transport
 
         public TankSemitrailer(string ID, double semitrailerWeight, double maxProductWeight, double maxProductVolume) : base(ID, semitrailerWeight, maxProductWeight, maxProductVolume)
         {
+            Type = SemitrailerType.TankSemitrailer;   
         }
 
     }

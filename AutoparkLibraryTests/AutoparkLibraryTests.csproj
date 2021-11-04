@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4A79F29B-9356-4A95-9B5D-F6AAD2C64043}</ProjectGuid>
+    <ProjectGuid>{7F908F78-08EA-46E8-940D-10201C149545}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AutoparkLibraryTests</RootNamespace>
@@ -56,8 +56,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AutoparkFabricTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TruckTractorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

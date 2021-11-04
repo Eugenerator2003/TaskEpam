@@ -15,11 +15,11 @@ namespace AutoparkLibrary.Transport
 
         public override void Upload(Product product)
         {
-            if (product.Condition != Product.StorageCondition.Thermal)
+            if (product.StorageCondition != Product.ConditionOfStorage.Thermal)
                 throw new InvalidProductStorageConditionException("The semi-trailer can be loaded only with products with temperature conditions");
-            if (products.Count > 0 && product.Type != type)
+            if (Products.Count > 0 && product.Type != type)
                 throw new InvalidProductTypeException("The semi-trailer has products with another product type");
-            if (products.Count > 0 && (product.TemperatureMin <= temp_min || product.TemperatureMax >= temp_max))
+            if (Products.Count > 0 && (product.TemperatureMin <= temp_min || product.TemperatureMax >= temp_max))
                 throw new InvalidProductStorageConditionException("Product not suitable for semi-trailer with already setted temperature condition");
             if (product.Volume <= FreeProductsVolume && product.Weight <= FreeProductsWeight)
             {
@@ -29,7 +29,7 @@ namespace AutoparkLibrary.Transport
                     type = product.Type;
                     _SetTemperature();
                 }
-                else if (GetProductsWeight() + SemitrailerWeight + product.Weight <= Truck.MaxLoadedSemitrailerWeight)
+                else if (GetProductsWeight() + SemitrailerWeight + product.Weight <= Truck.CarryingCapacity)
                 {
                     AddProduct(product);
                     type = product.Type;
@@ -44,12 +44,12 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(out List<Product> productsUnloaded)
         {
-            if (products.Count > 0)
+            if (Products.Count > 0)
             {
                 productsUnloaded = new List<Product>();
-                foreach (Product product in products)
+                foreach (Product product in Products)
                     productsUnloaded.Add(product);
-                products.Clear();
+                Products.Clear();
                 FreeProductsVolume = MaxProductsVolume;
                 FreeProductsWeight = MaxProductsWeight;
             }
@@ -59,7 +59,7 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(Product product, double partPercent, out Product productUnloaded)
         {
-            if (products.Contains(product))
+            if (Products.Contains(product))
             {
                 RemoveProduct(product);
                 productUnloaded = null;
@@ -70,8 +70,8 @@ namespace AutoparkLibrary.Transport
                 }
                 else if (partPercent > 100 || partPercent <= 0)
                 {
-                    productUnloaded = new Product(product.Name, product.Type, product.Condition, product.Weight * partPercent / 100, product.Volume * partPercent / 100);
-                    Product productLoded = new Product(product.Name, product.Type, product.Condition, product.Weight * (100 - partPercent) / partPercent, product.Volume * (100 - partPercent) / 100);
+                    productUnloaded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * partPercent / 100, product.Volume * partPercent / 100);
+                    Product productLoded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * (100 - partPercent) / partPercent, product.Volume * (100 - partPercent) / 100);
                     AddProduct(productLoded);
                     _SetTemperature();
                 }
@@ -88,27 +88,34 @@ namespace AutoparkLibrary.Transport
 
         public RefrigiratorSemitrailer(string ID, double semitrailerWeight, double maxProductWeight, double maxProductVolume) : base(ID, semitrailerWeight, maxProductWeight, maxProductVolume)
         {
+            Type = SemitrailerType.RefrigiratorSemitrailer;
         }
 
         private void _SetTemperature()
         {
-            int count = products.Count;
+            int count = Products.Count;
             if (count > 0)
             {
-                temp_max = products[0].TemperatureMax;
-                temp_min = products[0].TemperatureMin;
+                temp_max = Products[0].TemperatureMax;
+                temp_min = Products[0].TemperatureMin;
                 for (int i = 1; i < count; i++)
                 {
-                    if (products[i].TemperatureMax < temp_max)
+                    if (Products[i].TemperatureMax < temp_max)
                     {
-                        temp_max = products[i].TemperatureMax;
+                        temp_max = Products[i].TemperatureMax;
                     }
-                    else if (products[i].TemperatureMin > temp_min)
+                    else if (Products[i].TemperatureMin > temp_min)
                     {
-                        temp_min = products[i].TemperatureMin;
+                        temp_min = Products[i].TemperatureMin;
                     }
                 }
             }
+        }
+
+        public void GetTemperatureCondition(out double temperatureMin, out double temperatureMax)
+        {
+            temperatureMin = temp_min;
+            temperatureMax = temp_max;
         }
     }
 }
