@@ -17,7 +17,7 @@ namespace AutoparkLibrary.Transport
                 throw new InvalidProductStorageConditionException("The semi-trailer can be loaded only with product with box storage condition");
             if (Products.Count > 0 && product.Type != type)
                 throw new InvalidProductTypeException("The semi-trailer has products with another product type");
-            if (product.Volume <= FreeProductsVolume && product.Weight <= FreeProductsWeight)
+            if (product.Volume <= FreeVolume && product.Weight <= FreeWeight)
             {
                 if (Truck == null)
                 {
@@ -44,8 +44,8 @@ namespace AutoparkLibrary.Transport
                 foreach (Product product in Products)
                     productsUnloaded.Add(product);
                 Products.Clear();
-                FreeProductsVolume = MaxProductsVolume;
-                FreeProductsWeight = MaxProductsWeight;
+                FreeVolume = MaxProductsVolume;
+                FreeWeight = MaxProductsWeight;
             }
             else
                 throw new NoProductsLoadedException("There are no loaded products in the semi-trailer");
@@ -53,9 +53,9 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(Product product, double partPercent, out Product productUnloaded)
         {
-            if (Products.Contains(product))
+            if (Product.FindProductByProductClone(product, Products, out int indexOfFoundProduct))
             {
-                RemoveProduct(product);
+                RemoveProduct(indexOfFoundProduct);
                 productUnloaded = null;
                 if (partPercent == 100)
                 {
@@ -79,10 +79,20 @@ namespace AutoparkLibrary.Transport
             Unload(product, 100, out productUnloaded);
         }
 
-        public TiltSemitrailer(string ID, double semitrailerWeight, double maxProductWeight, double maxProductVolume)
-               : base(ID, semitrailerWeight, maxProductWeight, maxProductVolume)
+        public TiltSemitrailer(string garageId, double semitrailerWeight, double maxProductWeight, double maxProductVolume)
+               : base(garageId, semitrailerWeight, maxProductWeight, maxProductVolume)
         {
             Type = SemitrailerType.TiltSemitrailer;
+        }
+
+        public override object Clone()
+        {
+            TiltSemitrailer tiltClone = new TiltSemitrailer(GarageID, SemitrailerWeight, MaxProductsWeight, MaxProductsVolume);
+            foreach(Product product in Products)
+            {
+                tiltClone.Upload((Product)product.Clone());
+            }
+            return tiltClone;
         }
     }
 }

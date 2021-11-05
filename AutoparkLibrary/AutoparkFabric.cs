@@ -49,18 +49,19 @@ namespace AutoparkLibrary.Fabric
         {
             Product product = null;
             List<string> attributes = new List<string>(str.Split(','));
-            string name = attributes[0].Trim();
-            Enum.TryParse(attributes[1].Trim(), out Product.ConditionOfStorage storageCondition);
-            Enum.TryParse(attributes[2].Trim(), out Product.ProductType type);
-            double weight = Convert.ToDouble(attributes[3].Trim());
-            double volume = Convert.ToDouble(attributes[4].Trim());
+            string name = attributes[0];
+            Enum.TryParse(attributes[1], out Product.ConditionOfStorage storageCondition);
+            Enum.TryParse(attributes[2], out Product.ProductType type);
+            double weight = Convert.ToDouble(attributes[3]);
+            double volume = Convert.ToDouble(attributes[4]);
             if (attributes.Count > 5)
             {
-                double temperatureMin = Convert.ToDouble(attributes[5].Trim());
-                double temperatureMax = Convert.ToDouble(attributes[6].Trim());
+                double temperatureMin = Convert.ToDouble(attributes[5]);
+                double temperatureMax = Convert.ToDouble(attributes[6]);
                 product = GetProduct(name, type, storageCondition, weight, volume, temperatureMin, temperatureMax);
             }
-            product = new Product(name, type, storageCondition, weight, volume);
+            else
+                product = GetProduct(name, type, storageCondition, weight, volume);
             return product;
         }
 

@@ -8,7 +8,7 @@ using AutoparkLibrary.Exceptions;
 
 namespace AutoparkLibrary.Transport
 {
-    public abstract class Semitrailer
+    public abstract class Semitrailer : ICloneable
     {
         public enum SemitrailerType
         {
@@ -25,8 +25,8 @@ namespace AutoparkLibrary.Transport
         public double SemitrailerWeight { get; }
         public double MaxProductsWeight { get; }
         public double MaxProductsVolume { get; }
-        public double FreeProductsVolume { get; protected set; }
-        public double FreeProductsWeight { get; protected set; }
+        public double FreeVolume { get; protected set; }
+        public double FreeWeight { get; protected set; }
 
         public List<Product> Products = new List<Product>();
 
@@ -65,25 +65,32 @@ namespace AutoparkLibrary.Transport
         protected void AddProduct(Product product)
         {
             Products.Add(product);
-            FreeProductsWeight -= product.Weight;
-            FreeProductsVolume -= product.Volume;
+            FreeWeight -= product.Weight;
+            FreeVolume -= product.Volume;
         }
 
         protected void RemoveProduct(Product product)
         {
             Products.Remove(product);
-            FreeProductsWeight += product.Weight;
-            FreeProductsVolume += product.Volume;
+            FreeWeight += product.Weight;
+            FreeVolume += product.Volume;
+        }
+
+        protected void RemoveProduct(int indexOfProduct)
+        {
+            FreeWeight += Products[indexOfProduct].Weight;
+            FreeVolume += Products[indexOfProduct].Volume;
+            Products.RemoveAt(indexOfProduct);
         }
 
         public double GetProductsWeight()
         {
-            return MaxProductsWeight - FreeProductsWeight;
+            return MaxProductsWeight - FreeWeight;
         }
 
         public double GetProductsVolume()
         {
-            return MaxProductsVolume - FreeProductsVolume;
+            return MaxProductsVolume - FreeVolume;
         }
 
         public Semitrailer(string ID, double semitrailerWeight, double maxProductsWeight, double maxProductsVolume)
@@ -92,8 +99,8 @@ namespace AutoparkLibrary.Transport
             SemitrailerWeight = semitrailerWeight;
             MaxProductsWeight = maxProductsWeight;
             MaxProductsVolume = maxProductsVolume;
-            FreeProductsVolume = maxProductsVolume;
-            FreeProductsWeight = maxProductsWeight;
+            FreeVolume = maxProductsVolume;
+            FreeWeight = maxProductsWeight;
         }
 
         public override bool Equals(object obj)
@@ -121,6 +128,16 @@ namespace AutoparkLibrary.Transport
                    && this.SemitrailerWeight == SemitrailerWeight
                    && this.MaxProductsVolume == semitrailer.MaxProductsVolume
                    && this.MaxProductsWeight == semitrailer.MaxProductsWeight;
+        }
+
+        public abstract object Clone();
+
+        public override string ToString()
+        {
+            string truckStr = (Truck != null) ? $" Truck: {Truck.GarageID}" : "";
+            return $"Semitrailer - ID {GarageID}; Type: {Type}; Weight: {SemitrailerWeight}; " +
+                   $"Max products weight: {MaxProductsWeight}; Max products volume: {MaxProductsWeight}; " +
+                   $"Free weight: {FreeWeight}; Free volume: {FreeVolume};" + truckStr;
         }
     }
 }

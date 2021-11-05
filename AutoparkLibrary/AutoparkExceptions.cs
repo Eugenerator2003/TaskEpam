@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AutoparkLibrary.Exceptions
 {
-    class NoTrailerException : Exception
+    public class NoTrailerException : Exception
     {
         public NoTrailerException()
         {
@@ -22,7 +22,7 @@ namespace AutoparkLibrary.Exceptions
         }
     }
 
-    class TruckMaxWeightOverflowException : Exception
+    public class TruckMaxWeightOverflowException : Exception
     {
         public TruckMaxWeightOverflowException()
         {
@@ -41,7 +41,7 @@ namespace AutoparkLibrary.Exceptions
         }
     }
 
-    class InvalidProductStorageConditionException : Exception
+    public class InvalidProductStorageConditionException : Exception
     {
 
         public InvalidProductStorageConditionException()
@@ -58,7 +58,7 @@ namespace AutoparkLibrary.Exceptions
 
     }
 
-    class SemitrailleMaxDimensionsOverflowException : Exception
+    public class SemitrailleMaxDimensionsOverflowException : Exception
     {
 
         public SemitrailleMaxDimensionsOverflowException()
@@ -75,7 +75,7 @@ namespace AutoparkLibrary.Exceptions
 
     }
 
-    class NoProductsLoadedException : Exception
+    public class NoProductsLoadedException : Exception
     {
         public NoProductsLoadedException()
         {
@@ -94,7 +94,7 @@ namespace AutoparkLibrary.Exceptions
         }
     }
 
-    class InvalidProductTypeException : Exception
+    public class InvalidProductTypeException : Exception
     {
         public InvalidProductTypeException()
         {
@@ -109,6 +109,44 @@ namespace AutoparkLibrary.Exceptions
         }
 
         protected InvalidProductTypeException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
+
+    public class InvalidGarageIDException : Exception
+    {
+        public InvalidGarageIDException()
+        {
+        }
+
+        public InvalidGarageIDException(string message) : base(message)
+        {
+        }
+
+        public InvalidGarageIDException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected InvalidGarageIDException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
+
+    public class InvalidProductException : Exception
+    {
+        public InvalidProductException()
+        {
+        }
+
+        public InvalidProductException(string message) : base(message)
+        {
+        }
+
+        public InvalidProductException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected InvalidProductException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

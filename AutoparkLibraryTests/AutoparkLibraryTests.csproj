@@ -57,6 +57,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AutoparkFabricTests.cs" />
+    <Compile Include="AutoparkTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +67,10 @@
     <ProjectReference Include="..\AutoparkLibrary\AutoparkLibrary.csproj">
       <Project>{37D863E9-3817-489D-8C0A-91CCD4993A0E}</Project>
       <Name>AutoparkLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Autopark\Autopark.csproj">
+      <Project>{65D9A2B3-BC36-4FF5-8DED-A5C2FB4D390A}</Project>
+      <Name>Autopark</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

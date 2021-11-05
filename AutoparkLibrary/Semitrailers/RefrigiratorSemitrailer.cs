@@ -21,7 +21,7 @@ namespace AutoparkLibrary.Transport
                 throw new InvalidProductTypeException("The semi-trailer has products with another product type");
             if (Products.Count > 0 && (product.TemperatureMin <= temp_min || product.TemperatureMax >= temp_max))
                 throw new InvalidProductStorageConditionException("Product not suitable for semi-trailer with already setted temperature condition");
-            if (product.Volume <= FreeProductsVolume && product.Weight <= FreeProductsWeight)
+            if (product.Volume <= FreeVolume && product.Weight <= FreeWeight)
             {
                 if (Truck == null)
                 {
@@ -50,8 +50,8 @@ namespace AutoparkLibrary.Transport
                 foreach (Product product in Products)
                     productsUnloaded.Add(product);
                 Products.Clear();
-                FreeProductsVolume = MaxProductsVolume;
-                FreeProductsWeight = MaxProductsWeight;
+                FreeVolume = MaxProductsVolume;
+                FreeWeight = MaxProductsWeight;
             }
             else
                 throw new NoProductsLoadedException("There are no loaded products in the semi-trailer");
@@ -59,9 +59,9 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(Product product, double partPercent, out Product productUnloaded)
         {
-            if (Products.Contains(product))
+            if (Product.FindProductByProductClone(product, Products, out int indexOfFoundProduct))
             {
-                RemoveProduct(product);
+                RemoveProduct(indexOfFoundProduct);
                 productUnloaded = null;
                 if (partPercent == 100)
                 {
@@ -116,6 +116,16 @@ namespace AutoparkLibrary.Transport
         {
             temperatureMin = temp_min;
             temperatureMax = temp_max;
+        }
+
+        public override object Clone()
+        {
+            RefrigiratorSemitrailer refrigiratorClone = new RefrigiratorSemitrailer(GarageID, SemitrailerWeight, MaxProductsWeight, MaxProductsVolume);
+            foreach(Product product in Products)
+            {
+                refrigiratorClone.Upload((Product)product.Clone());
+            }
+            return refrigiratorClone;
         }
     }
 }

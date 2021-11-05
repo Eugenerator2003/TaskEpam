@@ -37,6 +37,21 @@ namespace AutoparkLibrary.Products
 
         public double TemperatureMax { get; }
 
+        public static bool FindProductByProductClone(Product productClone, List<Product> products, out int indexOfFoundProduct)
+        {
+            bool isFound = false;
+            indexOfFoundProduct = -1;
+            for (int i = 0; i < products.Count && !isFound; i++)
+            {
+                if (products[i].Equals(productClone))
+                {
+                    isFound = true;
+                    indexOfFoundProduct = i;
+                }
+            }
+            return isFound;
+        }
+
         public Product(string name, ProductType type, ConditionOfStorage condition, double weight, double volume)
         {
             Name = name;
@@ -55,8 +70,12 @@ namespace AutoparkLibrary.Products
 
         public override string ToString()
         {
-            return $"{Name}, {Type}, {StorageCondition}, {Weight}, {Volume}, " +
-                   $"{TemperatureMin}, {TemperatureMax}";
+            string result = $"{Name}, {Type}, {StorageCondition}, {Weight}, {Volume}";
+            if (StorageCondition == ConditionOfStorage.Thermal)
+            {
+                result += $", {Weight}, {Volume}";
+            }
+            return result;
         }
 
 

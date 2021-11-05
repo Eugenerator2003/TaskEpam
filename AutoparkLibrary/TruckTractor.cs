@@ -8,7 +8,7 @@ using AutoparkLibrary.Exceptions;
 
 namespace AutoparkLibrary.Transport
 {
-    public class TruckTractor
+    public class TruckTractor : ICloneable
     {
         public readonly double FuelConsumption;
         public string GarageID { get; }
@@ -54,6 +54,21 @@ namespace AutoparkLibrary.Transport
             Semitrailer.Unload(product, out productUnloaded);
         }
 
+        public void Unload(Product product, double partPercent, out Product productUnloaded)
+        {
+            if (Semitrailer == null)
+                throw new NoTrailerException("Truck doesn't have a trailer");
+            Semitrailer.Unload(product, partPercent, out productUnloaded);
+        }
+
+        public void Unload(out List<Product> productsUnloaded)
+        {
+            if (Semitrailer == null)
+                throw new NoTrailerException("Truck doesn't have a trailer");
+            Semitrailer.Unload(out productsUnloaded);
+        }
+
+
         public double GetFuelConsumption()
         {
             double semitrailerWeight = (Semitrailer == null) ? 0 : Semitrailer.SemitrailerWeight + Semitrailer.GetProductsWeight();
@@ -87,6 +102,23 @@ namespace AutoparkLibrary.Transport
                    && this.CarryingCapacity == truck.CarryingCapacity
                    && this.FuelConsumption == truck.FuelConsumption
                    && semitrailersEqual;
+        }
+
+        public object Clone()
+        {
+            TruckTractor truckClone = new TruckTractor(GarageID, Model, CarryingCapacity, FuelConsumption);
+            if (this.Semitrailer != null)
+            {
+                truckClone.AttachSemitrailer((Semitrailer)Semitrailer.Clone());
+            }
+            return (object)truckClone;
+        }
+
+        public override string ToString()
+        {
+            string semitrailerStr = (Semitrailer != null) ? $" Semi-trailer: {Semitrailer.GarageID}" : "";
+            return $"Truck - ID: {GarageID}; Model: {Model}; Carrying capacity: {CarryingCapacity}; Fuel Consumption: {FuelConsumption};"
+                   + semitrailerStr;
         }
     }
 }

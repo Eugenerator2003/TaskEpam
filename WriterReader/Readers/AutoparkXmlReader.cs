@@ -59,16 +59,46 @@ namespace AutoparkLibrary.IO
             if (reader.HasAttributes)
             {
                 string garageId = reader.GetAttribute("GarageID");
+                Enum.TryParse(reader.GetAttribute("SemitrailerType"), out Semitrailer.SemitrailerType type);
                 double semitrailerWeight = Convert.ToDouble(reader.GetAttribute("SemitrailerWeight"));
                 double maxProductWeight = Convert.ToDouble(reader.GetAttribute("MaximumProductWeight"));
                 double maxProductVolume = Convert.ToDouble(reader.GetAttribute("MaximimProductVolume"));
+                Semitrailer semitrailer = AutoparkFabric.GetSemitrailer(type, garageId, semitrailerWeight, maxProductWeight, maxProductVolume);
+
                 string productInfo = reader.GetAttribute("ProductInfo");
-                List<Product> products = AutoparkFabric.GetProductListFromString(productInfo);
+                if (productInfo != null)
+                {
+                    List<Product> products = AutoparkFabric.GetProductListFromString(productInfo);
+                    foreach (Product product in products)
+                    {
+                        semitrailer.Upload(product);
+                    }
+                }
+                semitrailers.Add(semitrailer);
+                
             }
         }
 
         private void ReadProduct(List<Product> products)
         {
+            if (reader.HasAttributes)
+            {
+                Product product = null;
+                string name = reader.GetAttribute("Name");
+                Enum.TryParse(reader.GetAttribute("ProductType"), out Product.ProductType type);
+                Enum.TryParse(reader.GetAttribute("StorageCondition"), out Product.ConditionOfStorage storageCondition);
+                double weight = Convert.ToDouble(reader.GetAttribute("Weight"));
+                double volume = Convert.ToDouble(reader.GetAttribute("Volume"));
+                if (reader.AttributeCount == 7)
+                {
+                    double tempMin = Convert.ToDouble(reader.GetAttribute("MinimalStorageTemperature"));
+                    double tempMax = Convert.ToDouble(reader.GetAttribute("MaximalStorageTemperature"));
+                    product = AutoparkFabric.GetProduct(name, type, storageCondition, weight, volume, tempMin, tempMax);
+                }
+                else
+                    product = AutoparkFabric.GetProduct(name, type, storageCondition, weight, volume);
+                products.Add(product);
+            }
         }
 
         public AutoparkXmlReader(string filePath)

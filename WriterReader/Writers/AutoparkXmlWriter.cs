@@ -53,7 +53,7 @@ namespace AutoparkLibrary.IO
                 StringBuilder productInfo = new StringBuilder("");
                 if (semitrailer.Products.Count != 0)
                 {
-                    foreach(Product product in semitrailer.Products)
+                    foreach (Product product in semitrailer.Products)
                     {
                         productInfo.Append(product + ";");
                     }
@@ -69,10 +69,10 @@ namespace AutoparkLibrary.IO
             {
                 writer.WriteStartElement("Product");
                 writer.WriteAttributeString("Name", product.Name);
-                writer.WriteAttributeString("ProductType", Convert.ToString(product.Type));
+                writer.WriteAttributeString("Type", Convert.ToString(product.Type));
                 writer.WriteAttributeString("StorageCondition", Convert.ToString(product.StorageCondition));
-                writer.WriteAttributeString("ProductWeight", Convert.ToString(product.Weight));
-                writer.WriteAttributeString("ProductVolume", Convert.ToString(product.Volume));
+                writer.WriteAttributeString("Weight", Convert.ToString(product.Weight));
+                writer.WriteAttributeString("Volume", Convert.ToString(product.Volume));
                 if (product.StorageCondition == Product.ConditionOfStorage.Thermal)
                 {
                     writer.WriteAttributeString("MinimalStorageTemperature", Convert.ToString(product.TemperatureMin));

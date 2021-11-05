@@ -16,7 +16,7 @@ namespace AutoparkLibrary.Transport
         {
             if (product.StorageCondition != Product.ConditionOfStorage.Liquid)
                 throw new InvalidProductStorageConditionException("The semi-trailer can be loaded only with liquid product");
-            if (product.Volume <= FreeProductsVolume && product.Weight <= FreeProductsWeight)
+            if (product.Volume <= FreeVolume && product.Weight <= FreeWeight)
             {
                 if (liquidName == "")
                 {
@@ -66,12 +66,12 @@ namespace AutoparkLibrary.Transport
                 productsUnloaded = new List<Product>();
                 productsUnloaded.Add(Products[0]);
                 Products.Clear();
-                FreeProductsVolume = MaxProductsVolume;
-                FreeProductsWeight = MaxProductsWeight;
+                FreeVolume = MaxProductsVolume;
+                FreeWeight = MaxProductsWeight;
                 liquidName = "";
             }
             else
-                throw new NoProductsLoadedException("There is no liquid in the semi-trailer");
+                throw new NoProductsLoadedException("There is no liquid in the tank semi-trailer");
         }
 
         public override void Unload(Product product, out Product productUnloaded)
@@ -81,9 +81,9 @@ namespace AutoparkLibrary.Transport
 
         public override void Unload(Product product, double partPercent, out Product productUnloaded)
         {
-            if (Products.Contains(product))
+            if (Product.FindProductByProductClone(product, Products, out int indexOfFoundProduct))
             {
-                RemoveProduct(product);
+                RemoveProduct(indexOfFoundProduct);
                 productUnloaded = null;
                 if (partPercent == 100)
                 {
@@ -100,13 +100,23 @@ namespace AutoparkLibrary.Transport
                     throw new ArgumentException("Invalid part percent of product");
             }
             else
-                throw new NoProductsLoadedException($"There is no {product.Name} in semi-trailer");
+                throw new NoProductsLoadedException($"There is no {product} in semi-trailer");
         }
 
 
         public TankSemitrailer(string ID, double semitrailerWeight, double maxProductWeight, double maxProductVolume) : base(ID, semitrailerWeight, maxProductWeight, maxProductVolume)
         {
             Type = SemitrailerType.TankSemitrailer;   
+        }
+
+        public override object Clone()
+        {
+            TankSemitrailer tankClone = new TankSemitrailer(GarageID, SemitrailerWeight, MaxProductsWeight, MaxProductsVolume);
+            foreach(Product product in Products)
+            {
+                tankClone.Upload((Product)product.Clone());
+            }
+            return tankClone;
         }
 
     }

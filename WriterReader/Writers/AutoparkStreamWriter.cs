@@ -21,8 +21,7 @@ namespace AutoparkLibrary.IO
         {
             try
             {
-
-                writer = new StreamWriter(filePath);
+                writer = new StreamWriter(filePath, false, Encoding.UTF8);
                 XmlWriter xmlWriter = XmlWriter.Create(writer);
                 xmlWriter.WriteStartDocument();
                 xmlWriter.WriteStartElement("Autopark");
@@ -31,6 +30,7 @@ namespace AutoparkLibrary.IO
                 WriteProducts(xmlWriter, products);
                 xmlWriter.WriteEndElement();
                 xmlWriter.Close();
+                writer.Dispose();
             }
             catch (IOException ex)
             {
@@ -61,6 +61,15 @@ namespace AutoparkLibrary.IO
                 writer.WriteAttributeString("SemitrailerWeight", Convert.ToString(semitrailer.SemitrailerWeight));
                 writer.WriteAttributeString("MaximumProductWeight", Convert.ToString(semitrailer.MaxProductsWeight));
                 writer.WriteAttributeString("MaximumProductVolume", Convert.ToString(semitrailer.MaxProductsVolume));
+                StringBuilder productInfo = new StringBuilder("");
+                if (semitrailer.Products.Count != 0)
+                {
+                    foreach (Product product in semitrailer.Products)
+                    {
+                        productInfo.Append(product + ";");
+                    }
+                }
+                writer.WriteAttributeString("ProductsInfo", productInfo.ToString());
                 writer.WriteEndElement();
             }
         }
@@ -71,10 +80,10 @@ namespace AutoparkLibrary.IO
             {
                 writer.WriteStartElement("Product");
                 writer.WriteAttributeString("Name", product.Name);
-                writer.WriteAttributeString("ProductType", Convert.ToString(product.Type));
+                writer.WriteAttributeString("Type", Convert.ToString(product.Type));
                 writer.WriteAttributeString("StorageCondition", Convert.ToString(product.StorageCondition));
-                writer.WriteAttributeString("ProductWeight", Convert.ToString(product.Weight));
-                writer.WriteAttributeString("ProductVolume", Convert.ToString(product.Volume));
+                writer.WriteAttributeString("Weight", Convert.ToString(product.Weight));
+                writer.WriteAttributeString("Volume", Convert.ToString(product.Volume));
                 if (product.StorageCondition == Product.ConditionOfStorage.Thermal)
                 {
                     writer.WriteAttributeString("MinimalStorageTemperature", Convert.ToString(product.TemperatureMin));
