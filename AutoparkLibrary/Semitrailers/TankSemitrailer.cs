@@ -115,7 +115,7 @@ namespace AutoparkLibrary.Transport
                     productUnloaded = (Product)product.Clone();
                     LiquidName = "";
                 }
-                else if (percentPart > 100 || percentPart <= 0)
+                else if (percentPart < 100 && percentPart > 0)
                 {
                     productUnloaded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * percentPart / 100, product.Volume * percentPart / 100);
                     Product productLoded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * (100 - percentPart) / percentPart, product.Volume * (100 - percentPart) / 100);
@@ -129,12 +129,24 @@ namespace AutoparkLibrary.Transport
         }
 
 
+        /// <summary>
+        /// Constructor of tank semitrailer.
+        /// </summary>
+        /// <param name="garagId">garage ID.</param>
+        /// <param name="semitrailerWeight">Semi-trailer weight.</param>
+        /// <param name="maxProductWeight">Maximum productc weight.</param>
+        /// <param name="maxProductVolume">Maximum products volume.</param>
 
-        public TankSemitrailer(string ID, double semitrailerWeight, double maxProductWeight, double maxProductVolume) : base(ID, semitrailerWeight, maxProductWeight, maxProductVolume)
+        public TankSemitrailer(string garagId, double semitrailerWeight, double maxProductWeight, double maxProductVolume) : base(garagId, semitrailerWeight, maxProductWeight, maxProductVolume)
         {
-            Type = SemitrailerType.TankSemitrailer;   
+            Type = SemitrailerType.TankSemitrailer;
+            LiquidName = "";
         }
 
+        /// <summary>
+        /// Getting clone of tank semi-trailer.
+        /// </summary>
+        /// <returns>Clone of tank semi-trailer.</returns>
         public override object Clone()
         {
             TankSemitrailer tankClone = new TankSemitrailer(GarageID, SemitrailerWeight, MaxProductsWeight, MaxProductsVolume);

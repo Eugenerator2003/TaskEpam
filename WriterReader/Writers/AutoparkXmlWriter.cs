@@ -66,8 +66,8 @@ namespace AutoparkLibrary.IO
                 writer.WriteAttributeString("SemitrailerType", Convert.ToString(semitrailer.Type));
                 writer.WriteAttributeString("GarageID", semitrailer.GarageID);
                 writer.WriteAttributeString("SemitrailerWeight", Convert.ToString(semitrailer.SemitrailerWeight));
-                writer.WriteAttributeString("MaximumProductWeight", Convert.ToString(semitrailer.MaxProductsWeight));
-                writer.WriteAttributeString("MaximumProductVolume", Convert.ToString(semitrailer.MaxProductsVolume));
+                writer.WriteAttributeString("MaximumProductsWeight", Convert.ToString(semitrailer.MaxProductsWeight));
+                writer.WriteAttributeString("MaximumProductsVolume", Convert.ToString(semitrailer.MaxProductsVolume));
                 StringBuilder productInfo = new StringBuilder("");
                 if (semitrailer.Products.Count != 0)
                 {

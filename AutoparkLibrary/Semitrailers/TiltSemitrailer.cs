@@ -79,14 +79,14 @@ namespace AutoparkLibrary.Transport
                 {
                     productUnloaded = (Product)product.Clone();
                 }
-                else if (percentPart > 100 || percentPart <= 0)
+                else if (percentPart < 100 && percentPart > 0)
                 {
                     productUnloaded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * percentPart / 100, product.Volume * percentPart / 100);
                     Product productLoded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * (100 - percentPart) / percentPart, product.Volume * (100 - percentPart) / 100);
                     AddProduct(productLoded);
                 }
                 else
-                    throw new ArgumentException("Invalid part percent of product");
+                    throw new ArgumentException($"Invalid part percent (\"{percentPart}\") of product");
             }
             else
                 throw new NoProductsLoadedException($"There is no {product.Name} in semi-trailer");
@@ -105,7 +105,7 @@ namespace AutoparkLibrary.Transport
         /// <summary>
         /// Constructor of TiltSemitrailer type.
         /// </summary>
-        /// <param name="garageId">The semi-trailer Garage ID</param>
+        /// <param name="garageId">The semi-trailer garage ID</param>
         /// <param name="semitrailerWeight">The semi-trailer weight.</param>
         /// <param name="maxProductsWeight">Maximum weight of products transported by the semi-trailer.</param>
         /// <param name="maxProductsVolume">Maximum volume of products transported by the semi-trailer.</param>

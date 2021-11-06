@@ -26,7 +26,7 @@ namespace AutoparkLibrary.Transport
                 throw new InvalidProductStorageConditionException("The semi-trailer can be loaded only with products with temperature conditions");
             if (Products.Count > 0 && product.Type != type)
                 throw new InvalidProductTypeException("The semi-trailer has products with another product type");
-            if (Products.Count > 0 && (product.TemperatureMin <= temp_min || product.TemperatureMax >= temp_max))
+            if (Products.Count > 0 && (product.TemperatureMax < temp_min || product.TemperatureMin > temp_max))
                 throw new InvalidProductStorageConditionException("Product not suitable for semi-trailer with already setted temperature condition");
             if (product.Volume <= FreeVolume && product.Weight <= FreeWeight)
             {
@@ -85,10 +85,12 @@ namespace AutoparkLibrary.Transport
                     productUnloaded = (Product)product.Clone();
                     _SetTemperature();
                 }
-                else if (percentPart > 100 || percentPart <= 0)
+                else if (percentPart < 100 && percentPart > 0)
                 {
-                    productUnloaded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * percentPart / 100, product.Volume * percentPart / 100);
-                    Product productLoded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * (100 - percentPart) / percentPart, product.Volume * (100 - percentPart) / 100);
+                    productUnloaded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * percentPart / 100,
+                                        product.Volume * percentPart / 100, product.TemperatureMin, product.TemperatureMax);
+                    Product productLoded = new Product(product.Name, product.Type, product.StorageCondition, product.Weight * (100 - percentPart)
+                                     / percentPart, product.Volume * (100 - percentPart) / 100, product.TemperatureMin, product.TemperatureMax);
                     AddProduct(productLoded);
                     _SetTemperature();
                 }

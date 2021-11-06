@@ -57,6 +57,10 @@ namespace AutoparkLibrary.Exceptions
         {
         }
 
+        public InvalidProductStorageConditionException(string message, Exception innerException) : base (message, innerException)
+        {
+
+        }
 
     }
 
@@ -96,10 +100,6 @@ namespace AutoparkLibrary.Exceptions
         public NoProductsLoadedException(string message, Exception innerException) : base(message, innerException)
         {
         }
-
-        protected NoProductsLoadedException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 
     /// <summary>
@@ -116,10 +116,6 @@ namespace AutoparkLibrary.Exceptions
         }
 
         public InvalidProductTypeException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected InvalidProductTypeException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
@@ -141,9 +137,6 @@ namespace AutoparkLibrary.Exceptions
         {
         }
 
-        protected InvalidGarageIDException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 
     /// <summary>
@@ -160,10 +153,6 @@ namespace AutoparkLibrary.Exceptions
         }
 
         public InvalidProductException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected InvalidProductException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

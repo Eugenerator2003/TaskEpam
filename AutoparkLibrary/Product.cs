@@ -140,8 +140,8 @@ namespace AutoparkLibrary.Products
         public Product(string name, ProductType type, ConditionOfStorage condition, double weight, double volume, double temp_min, double temp_max)
                  : this(name, type, condition, weight, volume)
         {
-            TemperatureMin = temp_max;
-            TemperatureMax = temp_min;
+            TemperatureMin = temp_min;
+            TemperatureMax = temp_max;
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace AutoparkLibrary.Products
             string result = $"{Name}, {Type}, {StorageCondition}, {Weight}, {Volume}";
             if (StorageCondition == ConditionOfStorage.Thermal)
             {
-                result += $", {Weight}, {Volume}";
+                result += $", {TemperatureMin}, {TemperatureMax}";
             }
             return result;
         }

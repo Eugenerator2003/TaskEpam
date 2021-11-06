@@ -63,9 +63,10 @@ namespace AutoparkLibrary.Transport
         /// </summary>
         public void UnhookSemitrailer()
         {
-            if (Semitrailer.Truck != null)
-                Semitrailer.UnhookTruck();
+            Semitrailer semitrailer = Semitrailer;
             Semitrailer = null;
+            if (semitrailer.Truck != null)
+                semitrailer.UnhookTruck();
         }
 
         /// <summary>

@@ -13,6 +13,8 @@ namespace AutoparkLibrary.Fabric
     /// </summary>
     public static class AutoparkFabric
     {
+        private static List<string> existIds = new List<string>();
+
         /// <summary>
         /// Getting the truck tractor.
         /// </summary>
@@ -125,6 +127,32 @@ namespace AutoparkLibrary.Fabric
             return products;
         }
 
+        public static string GetUniquRandomID()
+        {
+            StringBuilder id = new StringBuilder();
+            Random random = new Random();
+            bool unique = false;
+            while(!unique)
+            {
+                id.Clear();
+                id.Append(((char)(random.Next(65, 90))) + ((char)(random.Next(65, 95))) + "-");
+                id.Append(random.Next(1000, 9999));
+                int i;
+                for (i = 0; i < existIds.Count; i++)
+                {
+                    if (id.ToString() == existIds[i])
+                    {
+                        break;
+                    }
+                }
+                if (i > existIds.Count - 1 || existIds.Count == 0)
+                {
+                    unique = true;
+                }    
+            }
+            existIds.Add(id.ToString());
+            return id.ToString();
+        }
 
     }
 }

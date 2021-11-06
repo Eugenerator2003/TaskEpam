@@ -59,7 +59,7 @@ namespace AutoparkLibrary
         /// </summary>
         /// <param name="type">Type of semi-trailer.</param>
         /// <returns>Semi-trailer if is was found or null if not.</returns>
-        public Semitrailer FindSemitrailerByType(Semitrailer.SemitrailerType type)
+        public Semitrailer GetSemitrailerByType(Semitrailer.SemitrailerType type)
         {
             Semitrailer found = null;
             foreach (Semitrailer semitrailer in semitrailers)
@@ -80,7 +80,7 @@ namespace AutoparkLibrary
         /// <param name="semitrailerMaxWeight">Maximum loaded products weight.</param>
         /// <param name="semitrailerMaxVolume">Maximum loaded products volume.</param>
         /// <returns>Semitrailer if it was found or null if not.</returns>
-        public Semitrailer FindSemitrailerByCharacteristics(double semitrailerWeight, double semitrailerMaxWeight, double semitrailerMaxVolume)
+        public Semitrailer GetSemitrailerByCharacteristics(double semitrailerWeight, double semitrailerMaxWeight, double semitrailerMaxVolume)
         {
             if (semitrailerWeight <= 0 || semitrailerMaxWeight <= 0 || semitrailerMaxVolume <= 0)
                 throw new ArgumentException("Invalid semi-trailer characteristics");
@@ -105,7 +105,7 @@ namespace AutoparkLibrary
         /// </summary>
         /// <param name="type">Product type.</param>
         /// <returns>List of trucks attached to semi-trailers uploaded with specific product type.</returns>
-        public List<TruckTractor> FindHitchesByProductType(Product.ProductType type)
+        public List<TruckTractor> GetHitchesByProductType(Product.ProductType type)
         {
             List<TruckTractor> foundHitches = new List<TruckTractor>();
             foreach (TruckTractor truck in trucks)
@@ -129,7 +129,7 @@ namespace AutoparkLibrary
         /// Finding hitches which can be loaded.
         /// </summary>
         /// <returns>List of truck attached to semi-trailers which can be loaded.</returns>
-        public List<TruckTractor> FindHitchesCanBeLoaded()
+        public List<TruckTractor> GetHitchesCanBeLoaded()
         {
             List<TruckTractor> foundHitches = new List<TruckTractor>();
             foreach (TruckTractor truck in trucks)
@@ -159,7 +159,7 @@ namespace AutoparkLibrary
         /// Finding hitches which can be loaded fully.
         /// </summary>
         /// <returns>List of truck attached to semi-trailers which can be loaded fully.</returns>
-        public List<TruckTractor> FindHitchesCanBeLoadedFully()
+        public List<TruckTractor> GetHitchesCanBeLoadedFully()
         {
             List<TruckTractor> foundHitches = new List<TruckTractor>();
             foreach (TruckTractor truck in trucks)
@@ -187,7 +187,8 @@ namespace AutoparkLibrary
                         }
                     }
                     if (truckClone.Semitrailer.MaxProductsWeight == truckClone.Semitrailer.GetProductsWeight()
-                        || truckClone.Semitrailer.MaxProductsVolume == truckClone.Semitrailer.GetProductsVolume())
+                        || truckClone.Semitrailer.MaxProductsVolume == truckClone.Semitrailer.GetProductsVolume()
+                        || truckClone.CarryingCapacity == truckClone.Semitrailer.GetProductsWeight())
                     {
                         foundHitches.Add(truck);
                     }
@@ -224,7 +225,8 @@ namespace AutoparkLibrary
         /// Unloading products from transport by its garage Id.
         /// </summary>
         /// <param name="garageId">Garage ID.</param>
-        public void Unload(string garageId)
+        /// <returns>Products which wan unloaded.</returns>
+        public List<Product> Unload(string garageId)
         {
             SearchByGarageID(garageId, out TruckTractor truck, out Semitrailer semitrailer);
             if (truck != null || semitrailer != null)
@@ -232,6 +234,7 @@ namespace AutoparkLibrary
                 Semitrailer semitrailerUnloaded = (truck != null) ? truck.Semitrailer : semitrailer;
                 semitrailerUnloaded.Unload(out List<Product> productsUnloaded);
                 products.AddRange(productsUnloaded);
+                return productsUnloaded;
             }
             else
                 throw new InvalidGarageIDException($"There is no transpot with \"{garageId}\" ID");
@@ -241,9 +244,10 @@ namespace AutoparkLibrary
         /// Unloading part of product from transport by its garage ID.
         /// </summary>
         /// <param name="garageId">Garage ID.</param>
-        /// <param name="percentPart">Percent part</param>
-        /// <param name="product">Specific product</param>
-        public void Unload(string garageId, double percentPart, Product product)
+        /// <param name="percentPart">Percent part.</param>
+        /// <param name="product">Specific produc.t</param>
+        /// <returns>Product which was unloaded.</returns>
+        public Product Unload(string garageId, double percentPart, Product product)
         {
             SearchByGarageID(garageId, out TruckTractor truck, out Semitrailer semitrailer);
             if (truck != null || semitrailer != null)
@@ -251,7 +255,7 @@ namespace AutoparkLibrary
                 Semitrailer semitrailerUnloaded = (truck != null) ? truck.Semitrailer : semitrailer;
                 semitrailerUnloaded.Unload(product, percentPart, out Product productUnloaded);
                 products.Add(productUnloaded);
-
+                return productUnloaded;
             }
             else
                 throw new InvalidGarageIDException($"There is no transpot with \"{garageId}\" ID");
@@ -262,9 +266,9 @@ namespace AutoparkLibrary
         /// </summary>
         /// <param name="garageId">Garage ID</param>
         /// <param name="product">Specific product</param>
-        public void Unload(string garageId, Product product)
+        public Product Unload(string garageId, Product product)
         {
-            Unload(garageId, 100, product);
+            return Unload(garageId, 100, product);
         }
 
         /// <summary>

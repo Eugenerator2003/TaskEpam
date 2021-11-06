@@ -108,9 +108,10 @@ namespace AutoparkLibrary.Transport
         /// </summary>
         public void UnhookTruck()
         {
-            if (Truck.Semitrailer != null)
-                Truck.UnhookSemitrailer();
+            TruckTractor truck = Truck;
             Truck = null;
+            if (truck.Semitrailer != null)
+                truck.UnhookSemitrailer();
         }
 
         /// <summary>
@@ -192,15 +193,15 @@ namespace AutoparkLibrary.Transport
         }
 
         /// <summary>
-        /// Constructor of Semitrailer type.
+        /// Constructor of Semitrailer.
         /// </summary>
-        /// <param name="ID">The semi-trailer Garage ID</param>
+        /// <param name="garageId">The semi-trailer Garage ID</param>
         /// <param name="semitrailerWeight">The semi-trailer weight.</param>
         /// <param name="maxProductsWeight">Maximum weight of products transported by the semi-trailer.</param>
         /// <param name="maxProductsVolume">Maximum volume of products transported by the semi-trailer.</param>
-        public Semitrailer(string ID, double semitrailerWeight, double maxProductsWeight, double maxProductsVolume)
+        public Semitrailer(string garageId, double semitrailerWeight, double maxProductsWeight, double maxProductsVolume)
         {
-            this.GarageID = ID;
+            this.GarageID = garageId;
             SemitrailerWeight = semitrailerWeight;
             MaxProductsWeight = maxProductsWeight;
             MaxProductsVolume = maxProductsVolume;

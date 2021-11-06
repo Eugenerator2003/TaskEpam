@@ -75,11 +75,11 @@ namespace AutoparkLibrary.IO
         {
             if (reader.HasAttributes)
             {
-                string garageId = reader.GetAttribute("GarageID");
                 Enum.TryParse(reader.GetAttribute("SemitrailerType"), out Semitrailer.SemitrailerType type);
+                string garageId = reader.GetAttribute("GarageID");
                 double semitrailerWeight = Convert.ToDouble(reader.GetAttribute("SemitrailerWeight"));
-                double maxProductWeight = Convert.ToDouble(reader.GetAttribute("MaximumProductWeight"));
-                double maxProductVolume = Convert.ToDouble(reader.GetAttribute("MaximimProductVolume"));
+                double maxProductWeight = Convert.ToDouble(reader.GetAttribute("MaximumProductsWeight"));
+                double maxProductVolume = Convert.ToDouble(reader.GetAttribute("MaximumProductsVolume"));
                 Semitrailer semitrailer = AutoparkFabric.GetSemitrailer(type, garageId, semitrailerWeight, maxProductWeight, maxProductVolume);
 
                 string productInfo = reader.GetAttribute("ProductInfo");
