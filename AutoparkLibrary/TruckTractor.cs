@@ -8,15 +8,40 @@ using AutoparkLibrary.Exceptions;
 
 namespace AutoparkLibrary.Transport
 {
+    /// <summary>
+    /// Truck tractor.
+    /// </summary>
     public class TruckTractor : ICloneable
     {
+        /// <summary>
+        /// Fuel cinsumprion of the truck.
+        /// </summary>
         public readonly double FuelConsumption;
+
+        /// <summary>
+        /// Garage ID of the the truck.
+        /// </summary>
         public string GarageID { get; }
+
+        /// <summary>
+        /// Model of the truck.
+        /// </summary>
         public string Model { get; }
-        public static int TruckQuantity{ get; private set; }
+
+        /// <summary>
+        /// Semitrailer hitched to the truck.
+        /// </summary>
         public Semitrailer Semitrailer { get; private set; }
+
+        /// <summary>
+        /// Carrying capacity of the truck.
+        /// </summary>
         public double CarryingCapacity { get; }
 
+        /// <summary>
+        /// Hitching the semi-trailer to the truck.
+        /// </summary>
+        /// <param name="semitrailer">The semi-trailer.</param>
         public void AttachSemitrailer(Semitrailer semitrailer)
         {
             if (CarryingCapacity >= semitrailer.SemitrailerWeight + semitrailer.GetProductsWeight())
@@ -30,9 +55,12 @@ namespace AutoparkLibrary.Transport
                     Semitrailer.AttachTruck(this);
             }
             else
-                throw new TruckMaxWeightOverflowException("Truck cannot be hooked to heavier semitrailer");
+                throw new TruckCarryingCapacityOverflowException("Truck cannot be hooked to heavier semitrailer");
         }
 
+        /// <summary>
+        /// Unhitching the semi-trailer from the truck.
+        /// </summary>
         public void UnhookSemitrailer()
         {
             if (Semitrailer.Truck != null)
@@ -40,56 +68,98 @@ namespace AutoparkLibrary.Transport
             Semitrailer = null;
         }
 
+        /// <summary>
+        /// Loading product to the semi-trailer hitched to the truck.
+        /// </summary>
+        /// <param name="product">Product</param>
         public void Upload(Product product)
         {
             if (Semitrailer == null)
-                throw new NoTrailerException("Truck doesn't have a trailer");
+                throw new NoSemitrailerException("Truck doesn't have a trailer");
             Semitrailer.Upload(product); 
         }
 
+        /// <summary>
+        /// Unloading a specific priduct from the semi-trailer hitched to the truck.
+        /// </summary>
+        /// <param name="product">Specific product.</param>
+        /// <param name="productUnloaded">Unloaded product.</param>
         public void Unload(Product product, out Product productUnloaded)
         {
             if (Semitrailer == null)
-                throw new NoTrailerException("Truck doesn't have a trailer");
+                throw new NoSemitrailerException("Truck doesn't have a trailer");
             Semitrailer.Unload(product, out productUnloaded);
         }
 
-        public void Unload(Product product, double partPercent, out Product productUnloaded)
+        /// <summary>
+        /// Unloading a part of the specific product from the semi-trailer hitched to the truck.
+        /// </summary>
+        /// <param name="product">Specific product.</param>
+        /// <param name="percentPart">A part of specific product which will unloaded.</param>
+        /// <param name="productUnloaded">Unloaded product.</param>
+        public void Unload(Product product, double percentPart, out Product productUnloaded)
         {
             if (Semitrailer == null)
-                throw new NoTrailerException("Truck doesn't have a trailer");
-            Semitrailer.Unload(product, partPercent, out productUnloaded);
+                throw new NoSemitrailerException("Truck doesn't have a trailer");
+            Semitrailer.Unload(product, percentPart, out productUnloaded);
         }
 
+        /// <summary>
+        /// Unloading products from the semi-trailer hitched to the truck.
+        /// </summary>
+        /// <param name="productsUnloaded">List of unloaded produtcs.</param>
         public void Unload(out List<Product> productsUnloaded)
         {
             if (Semitrailer == null)
-                throw new NoTrailerException("Truck doesn't have a trailer");
+                throw new NoSemitrailerException("Truck doesn't have a trailer");
             Semitrailer.Unload(out productsUnloaded);
         }
 
-
+        /// <summary>
+        /// Getting fuel consumption of the truck.
+        /// </summary>
+        /// <returns>Fuel consumption of the truck.</returns>
         public double GetFuelConsumption()
         {
             double semitrailerWeight = (Semitrailer == null) ? 0 : Semitrailer.SemitrailerWeight + Semitrailer.GetProductsWeight();
             return FuelConsumption * semitrailerWeight;
         }
 
-        public TruckTractor(string garageId, string model, double maxLoadedSemitrailerWeight, double fuelConsumption)
+
+        /// <summary>
+        /// Constructor of truck tractor.
+        /// </summary>
+        /// <param name="garageId">Garage ID.</param>
+        /// <param name="model">Model name.</param>
+        /// <param name="carryingCapacity">Carrying capacity of the truck.</param>
+        /// <param name="fuelConsumption">Fuel consumption of the truck.</param>
+        public TruckTractor(string garageId, string model, double carryingCapacity, double fuelConsumption)
         {
             GarageID = garageId;
             Model = model;
             this.FuelConsumption = fuelConsumption;
-            CarryingCapacity = maxLoadedSemitrailerWeight;
-            TruckQuantity++;
+            CarryingCapacity = carryingCapacity;
         }
 
+        /// <summary>
+        /// Constructor of truck tractor.
+        /// </summary>
+        /// <param name="garageId">Garage ID.</param>
+        /// <param name="model">Model name.</param>
+        /// <param name="maxLoadedSemitrailerWeight">Maximum loaded semi-trailer weight.</param>
+        /// <param name="fuelConsumption">Fuel consumption of the truck.</param>
+        /// <param name="semitrailer">The semitrailer hitched to the truck.</param>
         public TruckTractor(string garageId, string model, double maxLoadedSemitrailerWeight, double fuelConsumption, Semitrailer semitrailer)
                             : this(garageId, model, maxLoadedSemitrailerWeight, fuelConsumption)
         {
             AttachSemitrailer(semitrailer);
         }
 
+        /// <summary>
+        /// Comparing the truck with other object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if object is eqaul to the truck.</returns>
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -104,6 +174,10 @@ namespace AutoparkLibrary.Transport
                    && semitrailersEqual;
         }
 
+        /// <summary>
+        /// Getting clone of the truck.
+        /// </summary>
+        /// <returns>Clone of the truck.</returns>
         public object Clone()
         {
             TruckTractor truckClone = new TruckTractor(GarageID, Model, CarryingCapacity, FuelConsumption);
@@ -114,11 +188,30 @@ namespace AutoparkLibrary.Transport
             return (object)truckClone;
         }
 
+        /// <summary>
+        /// Getting the truck converted to String.
+        /// </summary>
+        /// <returns>Truck converted to String.</returns>
         public override string ToString()
         {
             string semitrailerStr = (Semitrailer != null) ? $" Semi-trailer: {Semitrailer.GarageID}" : "";
             return $"Truck - ID: {GarageID}; Model: {Model}; Carrying capacity: {CarryingCapacity}; Fuel Consumption: {FuelConsumption};"
                    + semitrailerStr;
+        }
+
+        /// <summary>
+        /// Getting hash code of the truck.
+        /// </summary>
+        /// <returns>Hash code of the truck.</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = -1879307251;
+            hashCode = hashCode * -1521134295 + FuelConsumption.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GarageID);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Model);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Semitrailer>.Default.GetHashCode(Semitrailer);
+            hashCode = hashCode * -1521134295 + CarryingCapacity.GetHashCode();
+            return hashCode;
         }
     }
 }

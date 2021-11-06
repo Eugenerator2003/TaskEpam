@@ -7,40 +7,45 @@ using System.Threading.Tasks;
 
 namespace AutoparkLibrary.Exceptions
 {
-    public class NoTrailerException : Exception
+    /// <summary>
+    /// Represents error with semi-trailer absence.
+    /// </summary>
+    public class NoSemitrailerException : Exception
     {
-        public NoTrailerException()
+        public NoSemitrailerException()
         {
         }
 
-        public NoTrailerException(string message) : base(message)
+        public NoSemitrailerException(string message) : base(message)
         {
         }
 
-        public NoTrailerException(string message, Exception innerException) : base(message, innerException)
+        public NoSemitrailerException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }
 
-    public class TruckMaxWeightOverflowException : Exception
+    /// <summary>
+    /// Represents error with truck carrying capacity exceed.
+    /// </summary>
+    public class TruckCarryingCapacityOverflowException : Exception
     {
-        public TruckMaxWeightOverflowException()
+        public TruckCarryingCapacityOverflowException()
         {
         }
 
-        public TruckMaxWeightOverflowException(string message) : base(message)
+        public TruckCarryingCapacityOverflowException(string message) : base(message)
         {
         }
 
-        public TruckMaxWeightOverflowException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected TruckMaxWeightOverflowException(SerializationInfo info, StreamingContext context) : base(info, context)
+        public TruckCarryingCapacityOverflowException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }
 
+    /// <summary>
+    /// Represents error with invalid storage condition for product.
+    /// </summary>
     public class InvalidProductStorageConditionException : Exception
     {
 
@@ -52,12 +57,12 @@ namespace AutoparkLibrary.Exceptions
         {
         }
 
-        public InvalidProductStorageConditionException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
 
     }
 
+    /// <summary>
+    /// Represents error with semi-trailer max dimensions overflow.
+    /// </summary>
     public class SemitrailleMaxDimensionsOverflowException : Exception
     {
 
@@ -75,6 +80,9 @@ namespace AutoparkLibrary.Exceptions
 
     }
 
+    /// <summary>
+    /// Represents error with loaded products absence.
+    /// </summary>
     public class NoProductsLoadedException : Exception
     {
         public NoProductsLoadedException()
@@ -94,6 +102,9 @@ namespace AutoparkLibrary.Exceptions
         }
     }
 
+    /// <summary>
+    /// Represents error with invalid product type.
+    /// </summary>
     public class InvalidProductTypeException : Exception
     {
         public InvalidProductTypeException()
@@ -113,6 +124,9 @@ namespace AutoparkLibrary.Exceptions
         }
     }
 
+    /// <summary>
+    /// Represents error with invalid garage Id.
+    /// </summary>
     public class InvalidGarageIDException : Exception
     {
         public InvalidGarageIDException()
@@ -132,6 +146,9 @@ namespace AutoparkLibrary.Exceptions
         }
     }
 
+    /// <summary>
+    /// Represents error with product absence.
+    /// </summary>
     public class InvalidProductException : Exception
     {
         public InvalidProductException()

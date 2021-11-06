@@ -10,12 +10,21 @@ using System.Threading.Tasks;
 
 namespace AutoparkLibrary.IO
 {
+    /// <summary>
+    /// Autopark XmlReader.
+    /// </summary>
     public class AutoparkXmlReader : IReader
     {
         private string filePath;
 
         private XmlReader reader;
 
+        /// <summary>
+        /// Reading information about trucks, semi-trailers and products.
+        /// </summary>
+        /// <param name="trucks">Trucks.</param>
+        /// <param name="semitrailers">Semi-trailers.</param>
+        /// <param name="products">Products.</param>
         public void Read(out List<TruckTractor> trucks, out List<Semitrailer> semitrailers, out List<Product> products)
         {
             trucks = new List<TruckTractor>();
@@ -42,6 +51,10 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Reading information abouts trucks.
+        /// </summary>
+        /// <param name="trucks">Trucks</param>
         private void ReadTruck(List<TruckTractor> trucks)
         {
             if (reader.HasAttributes)
@@ -54,6 +67,10 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Reading information about semi-trailers.
+        /// </summary>
+        /// <param name="semitrailers">Semi-trailers.</param>
         private void ReadSemitrailer(List<Semitrailer> semitrailers)
         {
             if (reader.HasAttributes)
@@ -79,6 +96,10 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Reading information about products.
+        /// </summary>
+        /// <param name="products">Products</param>
         private void ReadProduct(List<Product> products)
         {
             if (reader.HasAttributes)
@@ -101,9 +122,46 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Costructor of AutoparkXmlWriter.
+        /// </summary>
+        /// <param name="filePath">File path</param>
         public AutoparkXmlReader(string filePath)
         {
             this.filePath = filePath;
+        }
+
+        /// <summary>
+        /// Comparing AutoparkXmlReader with other object.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns>True if object is equal to AutoparkXmlReader.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is AutoparkXmlReader reader &&
+                   filePath == reader.filePath &&
+                   EqualityComparer<XmlReader>.Default.Equals(this.reader, reader.reader);
+        }
+
+        /// <summary>
+        /// Getting hash cod of the AutoparkXmlReader.
+        /// </summary>
+        /// <returns>Hash code of the AutoparkXmlReader</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = 774023802;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(filePath);
+            hashCode = hashCode * -1521134295 + EqualityComparer<XmlReader>.Default.GetHashCode(reader);
+            return hashCode;
+        }
+
+        /// <summary>
+        /// Getting the AutoparkXmlReader converted to String.
+        /// </summary>
+        /// <returns>The AutoparkXmlReader converted to String.</returns>
+        public override string ToString()
+        {
+            return base.ToString(); ;
         }
     }
 }

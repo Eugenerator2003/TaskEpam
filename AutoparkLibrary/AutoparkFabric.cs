@@ -8,13 +8,33 @@ using AutoparkLibrary.Products;
 
 namespace AutoparkLibrary.Fabric
 {
+    /// <summary>
+    /// Autopark fabric.
+    /// </summary>
     public static class AutoparkFabric
     {
+        /// <summary>
+        /// Getting the truck tractor.
+        /// </summary>
+        /// <param name="garageId">Garage ID.</param>
+        /// <param name="model">Model name.</param>
+        /// <param name="carryingCapacity">Carruing capacity of the truck.</param>
+        /// <param name="fuelConsumption">Fuel consumption of the truck.</param>
+        /// <returns>The truck.</returns>
         public static TruckTractor GetTruck(string garageId, string model, double carryingCapacity, double fuelConsumption)
         {
             return new TruckTractor(garageId, model, carryingCapacity, fuelConsumption);
         }
 
+        /// <summary>
+        /// Getting the semi-trailer.
+        /// </summary>
+        /// <param name="type">Type of semi-trailer</param>
+        /// <param name="garageId">The semi-trailer Garage ID</param>
+        /// <param name="semitrailerWeight">The semi-trailer weight.</param>
+        /// <param name="maxProductsWeight">Maximum weight of products transported by the semi-trailer.</param>
+        /// <param name="maxProductsVolume">Maximum volume of products transported by the semi-trailer.</param>
+        /// <returns>The semi-trailer</returns>
         public static Semitrailer GetSemitrailer(Semitrailer.SemitrailerType type, string garageId, double semitrailerWeight, double maxProductsWeight, double maxProductsVolume)
         {
             Semitrailer semitrailer = null;
@@ -33,18 +53,42 @@ namespace AutoparkLibrary.Fabric
             return semitrailer;
         }
 
+        /// <summary>
+        /// Getting the product.
+        /// </summary>
+        /// <param name="name">Product name.</param>
+        /// <param name="type">Product type.</param>
+        /// <param name="storageCondition">Product storage condition.</param>
+        /// <param name="weight">Prdouct weight.</param>
+        /// <param name="volume">Product volume.</param>
+        /// <returns>The product</returns>
         public static Product GetProduct(string name, Product.ProductType type, Product.ConditionOfStorage storageCondition,
                                                                                         double weight, double volume)
         {
             return new Product(name, type, storageCondition, weight, volume);
         }
 
+        /// <summary>
+        /// Getting the product with temperature set.
+        /// </summary>
+        /// <param name="name">Product name.</param>
+        /// <param name="type">Product type.</param>
+        /// <param name="storageCondition">Product storage condition.</param>
+        /// <param name="weight">Prdouct weight.</param>
+        /// <param name="volume">Product volume.</param>
+        /// <param name="temperatureMin">Minimal storage temperature.</param>
+        /// <param name="temperatureMax">Maximal storage temperature.</param>
         public static Product GetProduct(string name, Product.ProductType type, Product.ConditionOfStorage storageCondition,
                                                 double weight, double volume, double temperatureMin, double temperatureMax)
         {
             return new Product(name, type, storageCondition, weight, volume, temperatureMin, temperatureMax);
         }
 
+        /// <summary>
+        /// Getting the product from string with product info.
+        /// </summary>
+        /// <param name="str">String with product info.</param>
+        /// <returns>Product</returns>
         public static Product GetProductFromString(string str)
         {
             Product product = null;
@@ -65,6 +109,11 @@ namespace AutoparkLibrary.Fabric
             return product;
         }
 
+        /// <summary>
+        /// Getting the list of products from semicolon-delimited product information string.
+        /// </summary>
+        /// <param name="str">Semicolon-delimited product information string.</param>
+        /// <returns>List of products.</returns>
         public static List<Product> GetProductListFromString(string str)
         {
             List<Product> products = new List<Product>();

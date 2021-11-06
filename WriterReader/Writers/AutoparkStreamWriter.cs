@@ -10,6 +10,9 @@ using AutoparkLibrary.Transport;
 
 namespace AutoparkLibrary.IO
 {
+    /// <summary>
+    /// Autopark StreamWriter. 
+    /// </summary>
     public class AutoparkStreamWriter : IWriter
     {
 
@@ -17,6 +20,12 @@ namespace AutoparkLibrary.IO
 
         private StreamWriter writer;
 
+        /// <summary>
+        /// Writing information about trucks, semi-trailers and products. 
+        /// </summary>
+        /// <param name="trucks">Trucks</param>
+        /// <param name="semitrailers">Semi-trailers</param>
+        /// <param name="products">Products</param>
         public void Write(List<TruckTractor> trucks, List<Semitrailer> semitrailers, List<Product> products)
         {
             try
@@ -38,6 +47,11 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Writing information abouts trucks by using XmlWriter.
+        /// </summary>
+        /// <param name="writer">XmlWriter</param> 
+        /// <param name="trucks">Trucks</param>
         private void WriteTrucks(XmlWriter writer, List<TruckTractor> trucks)
         {
             foreach (TruckTractor truck in trucks)
@@ -51,6 +65,11 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Writing information about semi-trailers by using XmlWriter.
+        /// </summary>
+        /// <param name="writer">XmlWriter</param>
+        /// <param name="semitrailers">Semi-trailers.</param>
         private void WriteSemitrailers(XmlWriter writer, List<Semitrailer> semitrailers)
         {
             foreach (Semitrailer semitrailer in semitrailers)
@@ -74,6 +93,11 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Writing information about products by using XmlWriter.
+        /// </summary>
+        /// <param name="writer">XmlWriter</param>
+        /// <param name="products">Products</param>
         private void WriteProducts(XmlWriter writer, List<Product> products)
         {
             foreach (Product product in products)
@@ -93,9 +117,47 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Constructor of AutoparkStreamWriter.
+        /// </summary>
+        /// <param name="filePath">File path.</param>
         public AutoparkStreamWriter(string filePath)
         {
             this.filePath = filePath;
         }
+
+        /// <summary>
+        /// Comparing AutoparkStreamWriter with other object.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns>True if object is equal to AutoparkStreamWriter.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is AutoparkStreamWriter writer &&
+                   filePath == writer.filePath &&
+                   EqualityComparer<StreamWriter>.Default.Equals(this.writer, writer.writer);
+        }
+
+        /// <summary>
+        /// Getting hash cod of the AutoparkStreamWriter.
+        /// </summary>
+        /// <returns>Hash code of the AutoparkStreamWriter</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = -1946460658;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(filePath);
+            hashCode = hashCode * -1521134295 + EqualityComparer<StreamWriter>.Default.GetHashCode(writer);
+            return hashCode;
+        }
+
+        /// <summary>
+        /// Getting the AutoparkStreamWriter converted to String.
+        /// </summary>
+        /// <returns>The AutoparkStreamWriter converted to String.</returns>
+        public override string ToString()
+        {
+            return base.ToString(); ;
+        }
+
     }
 }

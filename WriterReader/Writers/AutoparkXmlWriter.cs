@@ -9,12 +9,21 @@ using AutoparkLibrary.Transport;
 
 namespace AutoparkLibrary.IO
 {
+    /// <summary>
+    /// Autopark XmlWriter.
+    /// </summary>
     public class AutoparkXmlWriter : IWriter
     {
         private string filePath;
 
         private XmlWriter writer;
 
+        /// <summary>
+        /// Writing information about trucks, semi-trailers and products. 
+        /// </summary>
+        /// <param name="trucks">Trucks</param>
+        /// <param name="semitrailers">Semi-trailers</param>
+        /// <param name="products">Products</param>
         public void Write(List<TruckTractor> trucks, List<Semitrailer> semitrailers, List<Product> products)
         {
             writer = XmlWriter.Create(filePath);
@@ -27,6 +36,11 @@ namespace AutoparkLibrary.IO
             writer.Close();
         }
 
+
+        /// <summary>
+        /// Writing information abouts trucks.
+        /// </summary>
+        /// <param name="trucks">Trucks</param>
         private void WriteTrucks(List<TruckTractor> trucks)
         {
             foreach(TruckTractor truck in trucks)
@@ -40,6 +54,10 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Writing information about semi-trailers.
+        /// </summary>
+        /// <param name="semitrailers">Semi-trailers.</param>
         private void WriteSemitrailers(List<Semitrailer> semitrailers)
         {
             foreach (Semitrailer semitrailer in semitrailers)
@@ -63,6 +81,10 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Writing information about products.
+        /// </summary>
+        /// <param name="products">Products</param>
         private void WriteProducts(List<Product> products)
         {
             foreach(Product product in products)
@@ -82,9 +104,46 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Constructor of AutoparkXmlWriter.
+        /// </summary>
+        /// <param name="filePath">File path.</param>
         public AutoparkXmlWriter(string filePath)
         {
             this.filePath = filePath;
+        }
+
+        /// <summary>
+        /// Comparing AutoparkXmlWriter with other object.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns>True if object is equal to AutoparkXmlWriter.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is AutoparkXmlWriter writer &&
+                   filePath == writer.filePath &&
+                   EqualityComparer<XmlWriter>.Default.Equals(this.writer, writer.writer);
+        }
+
+        /// <summary>
+        /// Getting hash cod of the AutoparkXmlWriter.
+        /// </summary>
+        /// <returns>Hash code of the AutoparkXmlWriter</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = -1946460658;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(filePath);
+            hashCode = hashCode * -1521134295 + EqualityComparer<XmlWriter>.Default.GetHashCode(writer);
+            return hashCode;
+        }
+
+        /// <summary>
+        /// Getting the AutoparkXmlWriter converted to String.
+        /// </summary>
+        /// <returns>The AutoparkXmlWriter converted to String.</returns>
+        public override string ToString()
+        {
+            return base.ToString(); ;
         }
     }
 }

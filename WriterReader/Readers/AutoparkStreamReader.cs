@@ -11,12 +11,21 @@ using AutoparkLibrary.Fabric;
 
 namespace AutoparkLibrary.IO
 {
+    /// <summary>
+    /// Autopark StreamReader.
+    /// </summary>
     public class AutoparkStreamReader : IReader
     {
         string filePath;
 
         StreamReader reader;
 
+        /// <summary>
+        /// Reading information about trucks, semi-trailers and products.
+        /// </summary>
+        /// <param name="trucks">Trucks.</param>
+        /// <param name="semitrailers">Semi-trailers.</param>
+        /// <param name="products">Products.</param>
         public void Read(out List<TruckTractor> trucks, out List<Semitrailer> semitrailers, out List<Product> products)
         {
             trucks = new List<TruckTractor>();
@@ -46,6 +55,12 @@ namespace AutoparkLibrary.IO
 
         }
 
+
+        /// <summary>
+        /// Reading information abouts trucks by using XmlReader.
+        /// </summary>
+        /// <param name="reader">XmlReeader</param>
+        /// <param name="trucks">Trucks</param>
         private void ReadTruck(XmlReader reader, List<TruckTractor> trucks)
         {
             if (reader.HasAttributes)
@@ -58,6 +73,11 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Reading information about semi-trailers by using XmlReader.
+        /// </summary>
+        /// <param name="reader">XmlReader</param>
+        /// <param name="semitrailers">Semi-trailers.</param>
         private void ReadSemitrailer(XmlReader reader, List<Semitrailer> semitrailers)
         {
             if (reader.HasAttributes)
@@ -83,6 +103,11 @@ namespace AutoparkLibrary.IO
             }
         }
 
+        /// <summary>
+        /// Reading information about products by using XmlReader.
+        /// </summary>
+        /// <param name="reader">XmlReader</param>
+        /// <param name="products">Products</param>
         private void ReadProduct(XmlReader reader, List<Product> products)
         {
             if (reader.HasAttributes)
@@ -105,10 +130,47 @@ namespace AutoparkLibrary.IO
             }
         }
 
-
+        /// <summary>
+        /// Constructor of AutoparkStreamReader.
+        /// </summary>
+        /// <param name="filePath">File path.</param>
         public AutoparkStreamReader(string filePath)
         {
             this.filePath = filePath;
         }
+
+        /// <summary>
+        /// Comparing AutoparkStreamReader with other object.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns>True if object is equal to AutoparkStreamReader.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is AutoparkStreamReader reader &&
+                   filePath == reader.filePath &&
+                   EqualityComparer<StreamReader>.Default.Equals(this.reader, reader.reader);
+        }
+
+        /// <summary>
+        /// Getting hash cod of the AutoparkStreamReader.
+        /// </summary>
+        /// <returns>Hash code of the AutoparkStreamReader</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = 774023802;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(filePath);
+            hashCode = hashCode * -1521134295 + EqualityComparer<StreamReader>.Default.GetHashCode(reader);
+            return hashCode;
+        }
+
+        /// <summary>
+        /// Getting the AutoparkStreamReader converted to String.
+        /// </summary>
+        /// <returns>The AutoparkStreamReader converted to String.</returns>
+        public override string ToString()
+        {
+            return base.ToString(); ;
+        }
+
     }
 }
