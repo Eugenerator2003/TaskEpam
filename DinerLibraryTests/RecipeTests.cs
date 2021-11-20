@@ -73,5 +73,13 @@ namespace DinerLibrary.Tests
             bool result = tuple.Item1 == Recipe.CookActionType.Add && tuple.Item2 == 0.4;
             Assert.IsTrue(result);
         }
+
+        [DataTestMethod]
+        [DataRow(Recipe.CookActionType.Boil, 5.2)]
+        [DataRow(Recipe.CookActionType.Fry, 3.3)]
+        public void GetActionTypeCostTest(Recipe.CookActionType type, double costExpected)
+        {
+            Assert.AreEqual(costExpected, Recipe.GetActionTypeCost(type));
+        }
     }
 }

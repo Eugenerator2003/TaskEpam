@@ -12,9 +12,14 @@ namespace DinerLibrary.Tests
     public class DinerTests
     {
         [TestMethod()]
-        public void GetMostCheapCookActionTypeTest()
+        public void SaveLoadTest()
         {
-            Assert.Fail();
+            Diner dinerOld = DinerFabric.GetStandartDiner();
+            DinerKitchen kitchen = new DinerKitchen();
+            Diner dinerNew = new Diner(kitchen);
+            dinerOld.SaveRecipe();
+            dinerNew.LoadRecipe();
+            CollectionAssert.AreEqual(dinerOld.Menu, dinerNew.Menu);
         }
     }
 }

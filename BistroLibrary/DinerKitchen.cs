@@ -164,6 +164,10 @@ namespace DinerLibrary
         public List<Order<int>> GetDoneOrders()
         {
             List<Order<int>> ordersDone = new List<Order<int>>();
+            foreach(Order<int> order in _ordersDone)
+            {
+                OrdersWaiting.Remove(order);
+            }
             ordersDone.AddRange(_ordersDone);
             _ordersDone.Clear();
             return ordersDone;
@@ -286,7 +290,6 @@ namespace DinerLibrary
             }
             foreach (Order<int> order in ordersDone)
             {
-                OrdersWaiting.Remove(order);
                 _ordersDone.Add(order);
             }
         }
@@ -549,6 +552,21 @@ namespace DinerLibrary
             {
                 _applienecesFree.Add(appliances, Appliances[appliances]);
             }
+        }
+
+        /// <summary>
+        /// Setting recipes from collection to recipes book.
+        /// </summary>
+        /// <param name="recipes">Collection of recipes.</param>
+        public void SetRecipesBook(List<Recipe> recipes)
+        {
+            if (OrdersWaiting.Count == 0)
+            {
+                RecipesBook.Clear();
+                RecipesBook.AddRange(recipes);
+            }
+            else
+                throw new OrderException("Can't set new recipe book while orders are being prepared");
         }
 
         /// <summary>

@@ -12,9 +12,14 @@ namespace DinerLibrary
     /// </summary>
     public class Diner
     {
-        private IJsonIO jsonIO;
+        private IJsonIO _jsonIO;
         private Manager _manager;
         private DinerKitchen _kitchen;
+
+        /// <summary>
+        /// Menu of the diner.
+        /// </summary>
+        public List<(string, Dish.DishType, double)> Menu { get => _manager.Menu; }
 
         /// <summary>
         /// Getting the tuple of most expensive action type and its cost.
@@ -118,23 +123,32 @@ namespace DinerLibrary
         }
 
         /// <summary>
-        /// Constuctor of Diner class.
+        /// Saving recipes from kitchen recipes book to "RecipeBook.json".
         /// </summary>
-        /// <param name="kitchen">The diner kitchen.</param>
-        /// <param name="path">The path to the file in which the information will be saved and loaded.</param>
-        public Diner(DinerKitchen kitchen, string path)
+        public void SaveRecipe()
         {
-            this._kitchen = kitchen;
-            _manager = new Manager(this._kitchen);
+            _jsonIO.SaveRecipes(_kitchen.RecipesBook);
+
         }
 
         /// <summary>
-        /// Constuctor of Diner class. Uses standart file path "E:\".
+        /// Loading recipes from "RecipeBook.json" to kitchen recipes book.
+        /// </summary>
+        public void LoadRecipe()
+        {
+            _kitchen.SetRecipesBook(_jsonIO.LoadRecipes());
+            _manager.Renew();
+        }
+
+        /// <summary>
+        /// Constuctor of Diner class.
         /// </summary>
         /// <param name="kitchen">The diner kitchen.</param>
-        public Diner(DinerKitchen kitchen) : this(kitchen, @"E:\")
+        public Diner(DinerKitchen kitchen)
         {
-
+            this._kitchen = kitchen;
+            _manager = new Manager(this._kitchen);
+            _jsonIO = new JsonIO();
         }
     }
 }

@@ -9,12 +9,14 @@ namespace DinerLibrary.IO
 {
     public interface IJsonIO
     {
-        //void Save();
+        void Save(List<Recipe> recipes, List<Order<int>> orders, List<Ingredient> ingredients,
+                                                                Dictionary<DinerKitchen.KitchenAppliances, int> appliances);
 
-        //void Load();
+        void Load(out List<Recipe> recipes, out List<Order<int>> orders, out List<Ingredient> ingredients,
+                                                                out Dictionary<DinerKitchen.KitchenAppliances, int> appliances);
 
         void SaveRecipes(List<Recipe> recipes);
 
-        List<Recipe> LoadRecipe();
+        List<Recipe> LoadRecipes();
     }
 }

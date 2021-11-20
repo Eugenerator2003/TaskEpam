@@ -92,6 +92,32 @@ namespace DinerLibrary
         }
 
         /// <summary>
+        /// Renewing kitchen and orders informations.
+        /// </summary>
+        public void Renew()
+        {
+            foreach (Recipe recipe in this.kitchen.RecipesBook)
+            {
+                Menu.Add((recipe.Name, recipe.DishType, recipe.Cost));
+            }
+            bool isHave = false;
+            foreach(Order<int> order in _orders)
+            {
+                if (kitchen.OrdersWaiting.Contains(order))
+                {
+                    isHave = true;
+                }
+            }
+            if (!isHave)
+            {
+                foreach(Order<int> order in kitchen.OrdersWaiting)
+                {
+                    _orders.Add(order);
+                }
+            }
+        }
+
+        /// <summary>
         /// Constructor of Manager.
         /// </summary>
         /// <param name="kitchen">The diner kitchen.</param>
@@ -100,10 +126,7 @@ namespace DinerLibrary
             this.kitchen = kitchen;
             Menu = new List<(string, Dish.DishType, double)>();
             _orders = new List<Order<int>>();
-            foreach(Recipe recipe in this.kitchen.RecipesBook)
-            {
-                Menu.Add((recipe.Name, recipe.DishType, recipe.Cost));
-            }
+            Renew();
         }
     }
 }
