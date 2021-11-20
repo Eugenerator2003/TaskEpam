@@ -7,8 +7,8 @@
     <ProjectGuid>{F465D59F-219B-4321-A2A0-46779B9806CB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DinerLibrary</RootNamespace>
-    <AssemblyName>DinerLibrary</AssemblyName>
+    <RootNamespace>BistroLibrary</RootNamespace>
+    <AssemblyName>BistroLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

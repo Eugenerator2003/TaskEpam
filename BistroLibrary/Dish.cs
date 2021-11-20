@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +9,6 @@ namespace DinerLibrary
     /// <summary>
     /// Class of Dish.
     /// </summary>
-    [Serializable]
     public class Dish
     {
         /// <summary>
