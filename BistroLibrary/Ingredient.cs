@@ -39,7 +39,7 @@ namespace DinerLibrary
         /// <summary>
         /// Cost of the one unit of the ingredient.
         /// </summary>
-        public int Cost { get; }
+        public double Cost { get; }
 
         /// <summary>
         /// Quantity of the units of the ingridients.
@@ -79,6 +79,7 @@ namespace DinerLibrary
                 throw new ArgumentException("Ingredient quantity can't become negative");
         }
 
+
         /// <summary>
         /// Constructor of Ingredient.
         /// </summary>
@@ -87,7 +88,7 @@ namespace DinerLibrary
         /// <param name="cost">Cost of the ingredient.</param>
         /// <param name="tempMin">Minimum temperature for storing the ingredient.</param>
         /// <param name="tempMax">Maximum temperature for storing the ingredient.</param>
-        public Ingredient(string name, StorageCondition storageCondition, int cost, int tempMin, int tempMax)
+        public Ingredient(string name, StorageCondition storageCondition, double cost, int tempMin, int tempMax)
         {
             Name = name;
             StorageType = storageCondition;
@@ -106,10 +107,10 @@ namespace DinerLibrary
         /// <param name="tempMin">Minimum temperature for storing the ingredient.</param>
         /// <param name="tempMax">Maximum temperature for storing the ingredient.</param>
         /// <param name="quantity">Arbitrary quantity of the ingredient.</param>
-        public Ingredient(string name, StorageCondition storageCondition, int cost, int tempMin, int tempMax, int quantity) 
+        public Ingredient(string name, StorageCondition storageCondition, double cost, int tempMin, int tempMax, int quantity) 
                             : this(name, storageCondition, cost, tempMin, tempMax)
         {
-            if (quantity < 0)
+            if (quantity > 0)
             {
                 Quantity = quantity;
             }

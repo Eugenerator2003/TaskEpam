@@ -35,11 +35,15 @@ namespace DinerLibrary
             /// <summary>
             /// Cooking pan.
             /// </summary>
-            Pan, // голд
+            Pan,
             /// <summary>
             /// Cooking pot.
             /// </summary>
             Pot,
+            /// <summary>
+            /// Pepper shaker.
+            /// </summary>
+            PepperShaker,
         }
 
         private Recipe currentRecipe;
@@ -108,7 +112,7 @@ namespace DinerLibrary
         public List<string> FindLessFrequentlyUsedIngredients()
         {
             List<string> ingredientsNames = new List<string>();
-            int min = 0;
+            int min = int.MaxValue;
             foreach (int count in _ingridientUsedCount.Values)
             {
                 if (min > count)
@@ -148,7 +152,7 @@ namespace DinerLibrary
         /// Getting dictionary of free appliences of the diner kitchen.
         /// </summary>
         /// <returns>Dictionary of free appliences.</returns>
-        public Dictionary<KitchenAppliances, int> GettFreeAppliences()
+        public Dictionary<KitchenAppliances, int> GetFreeAppliences()
         {
             return _applienecesFree;
         }
@@ -159,12 +163,14 @@ namespace DinerLibrary
         /// <returns></returns>
         public List<Order<int>> GetDoneOrders()
         {
-            // todo создание клонов и очистка готовых заказов
-            return _ordersDone;
+            List<Order<int>> ordersDone = new List<Order<int>>();
+            ordersDone.AddRange(_ordersDone);
+            _ordersDone.Clear();
+            return ordersDone;
         }
 
         /// <summary>
-        /// Cooking in a minute.
+        /// Cooking for a minute.
         /// </summary>
         public void Cook()
         {
@@ -196,7 +202,7 @@ namespace DinerLibrary
                 Recipe recipe = _currentDishes[i].Item2;
                 if (dish.PortionLeft > 0)
                 {
-                    if (recipe.CurrentActionIndex == recipe.CookActions.Count - 1 && recipe.CurrentAction.TimeSpend == recipe.CurrentAction.TimeRequired)
+                    if (recipe.CurrentActionIndex == recipe.CookActions.Count - 1 && recipe.CurrentTimeSpend == recipe.CurrentTimeRequired)
                     {
                         _applienecesFree[recipe.CurrentAction.Appliance] += 1;
                         dish.AddDonePortion();
@@ -204,7 +210,7 @@ namespace DinerLibrary
                         if (dish.PortionLeft == 0)
                             continue;
                     }
-                    else if (recipe.CurrentAction.TimeRequired == recipe.CurrentAction.TimeSpend)
+                    else if (recipe.CurrentTimeRequired == recipe.CurrentTimeSpend)
                     {
                         _applienecesFree[recipe.CurrentAction.Appliance] += 1;
                         recipe.GoToNextAction();
@@ -214,7 +220,14 @@ namespace DinerLibrary
                     {
                         _applienecesFree[recipe.CurrentAction.Appliance] -= 1;
                     }
-                    recipe.CurrentAction.Cook();
+
+                    try
+                    {
+                        recipe.CookByRecipe();
+                    }
+                    catch
+                    {
+                    }
 
                 }
                 else
@@ -239,7 +252,7 @@ namespace DinerLibrary
             {
                 foreach(Dish dish in order.Dishes)
                 {
-                    Recipe recipe = (Recipe)GetRecipeFromBook(dish).Clone();
+                    Recipe recipe = (Recipe)_GetRecipeFromBook(dish).Clone();
                     if (appliancesClone[recipe.CurrentAction.Appliance] > 0)
                     {
                         _currentDishes.Add((dish, recipe));
@@ -271,7 +284,7 @@ namespace DinerLibrary
                     ordersDone.Add(order);
                 }
             }
-            foreach(Order<int> order in ordersDone)
+            foreach (Order<int> order in ordersDone)
             {
                 OrdersWaiting.Remove(order);
                 _ordersDone.Add(order);
@@ -331,7 +344,11 @@ namespace DinerLibrary
             List<Recipe> recipes = new List<Recipe>();
             foreach(Dish dish in order.Dishes)
             {
-                recipes.Add(GetRecipeFromBook(dish));
+                Recipe recipe = _GetRecipeFromBook(dish);
+                for(int i = 0; i < dish.PortionCount; i++)
+                {
+                    recipes.Add(recipe);
+                }
             }
             if (!recipes.Contains(null))
             {
@@ -375,7 +392,7 @@ namespace DinerLibrary
                         }
                     }
                     else
-                        throw new OrderException("There are no ingridients for this recipe");
+                        throw new OrderException($"There are no ingridients  for this recipe. First of their: {name}");
                 }
                 if (isCanToAdd)
                 {
@@ -402,14 +419,14 @@ namespace DinerLibrary
         /// <summary>
         /// Getting recipe from the book of recipes.
         /// </summary>
-        /// <param name="dish"></param>
-        /// <returns></returns>
-        private Recipe GetRecipeFromBook(Dish dish)
+        /// <param name="dish">Dish which recipe is searching.</param>
+        /// <returns>Link to recipe from book or null if recipe doesn't exists.</returns>
+        private Recipe _GetRecipeFromBook(Dish dish)
         {
             Recipe requiredRecipe = null;
             foreach(Recipe recipe in RecipesBook)
             {
-                if (recipe.Name == dish.Name)
+                if (recipe.Name == dish.Name && dish.Type == recipe.DishType)
                 {
                     requiredRecipe = recipe;
                     break;
@@ -421,23 +438,24 @@ namespace DinerLibrary
         /// <summary>
         /// Starting making recipe.
         /// </summary>
-        /// <param name="recipeName"></param>
-        public void StartMakingRecipe(string recipeName /**/)
+        /// <param name="recipeName">Name of recipe.</param>
+        /// <param name="dishType">Type of dish which will be described in recipe.</param>
+        public void StartMakingRecipe(string recipeName, Dish.DishType dishType)
         {
             if (currentRecipe == null)
             {
                 bool isCanToAdd = true;
                 foreach(Recipe recipe in RecipesBook)
                 {
-                    if (recipe.Name == recipeName)
+                    if (recipe.Name == recipeName && recipe.DishType == dishType)
                     {
                         isCanToAdd = false;
-                        throw new RecipeException("Recipe with this name already exists");
+                        throw new RecipeException("Recipe with this name and type already exists");
                     }
                 }
                 if (isCanToAdd)
                 {
-                    currentRecipe = DinerFabric.GetRecipe(recipeName);
+                    currentRecipe = new Recipe(recipeName, dishType);
                 }
             }
             else
@@ -474,36 +492,62 @@ namespace DinerLibrary
         }
 
         /// <summary>
+        /// Adding a completed recipe to recipes book.
+        /// </summary>
+        public void AddRecipeToBook(Recipe recipe)
+        {
+            if (recipe.IsCompleted)
+            {
+                bool isCanToAdd = true;
+                foreach (Recipe recipeOld in RecipesBook)
+                {
+                    if (recipe.Name == recipeOld.Name && recipe.DishType == recipeOld.DishType)
+                    {
+                        isCanToAdd = false;
+                        throw new RecipeException("Recipe with this name and type already exists");
+                    }
+                }
+                if (isCanToAdd)
+                {
+                    RecipesBook.Add(recipe);
+                }
+            }
+            else
+                throw new RecipeException("Can't add new recipe to book. This recipe is incomplete");
+        }
+
+        /// <summary>
         /// Setting count of kitchen appliance.
         /// </summary>
         /// <param name="appliance">Kitchen appliance.</param>
         /// <param name="count">Count.</param>
-        public void SetKitchenApplianceCount(KitchenAppliances appliance, int count)
+        public void SetKitchenApplianceNumber(KitchenAppliances appliance, int count)
         {
-            if (Appliances.ContainsKey(appliance))
+            if (OrdersWaiting.Count == 0)
             {
-                Appliances[appliance] = count;
+                if (Appliances.ContainsKey(appliance))
+                {
+                    Appliances[appliance] = count;
+                }
+                else
+                {
+                    Appliances.Add(appliance, count);
+                }
+                _MakeFreeApplianceDictionary();
             }
             else
-            {
-                Appliances.Add(appliance, count);
-            }
+                throw new OrderException("Can't change kitchen applainces while cooking dishes");
         }
 
-        // todo а надо ли?
-        private void _MakeAppliancesDictionary(params int[] appliancesCounts)
+        /// <summary>
+        /// Making of dictionary with counts of free appliances.
+        /// </summary>
+        private void _MakeFreeApplianceDictionary()
         {
-            string[] appliancesNames = Enum.GetNames(typeof(KitchenAppliances));
-            if (appliancesCounts.Length == appliancesNames.Length)
+            _applienecesFree.Clear();
+            foreach (KitchenAppliances appliances in Appliances.Keys)
             {
-                for (int i = 0; i < appliancesCounts.Length; i++)
-                {
-                    KitchenAppliances appliance;
-                    Enum.TryParse(appliancesNames[i], out appliance);
-                    //KitchenAppliances appliance = Enum.Parse(typeof(KitchenAppliances), appliancesNames[i]);
-                    Appliances.Add(appliance, appliancesCounts[i]);
-                    _applienecesFree.Add(appliance, appliancesCounts[i]);
-                }
+                _applienecesFree.Add(appliances, Appliances[appliances]);
             }
         }
 
@@ -511,17 +555,31 @@ namespace DinerLibrary
         /// Constructor of DinerKitchen.
         /// </summary>
         /// <param name="recipes">Collection of recipes.</param>
-        /// <param name="appliancesCounts"></param>
-        public DinerKitchen(List<Recipe> recipes, params int[] appliancesCounts)
+        public DinerKitchen(List<Recipe> recipes)
         {
-            RecipesBook = recipes != null ? recipes : new List<Recipe>();
+            RecipesBook = new List<Recipe>();
+            if (recipes != null)
+            {
+                foreach(Recipe recipe in recipes)
+                {
+                    AddRecipeToBook(recipe);   
+                }
+            }
             _currentDishes = new List<(Dish, Recipe)>();
             Appliances = new Dictionary<KitchenAppliances, int>();
             _applienecesFree = new Dictionary<KitchenAppliances, int>();
-            _MakeAppliancesDictionary(appliancesCounts);
             Ingredients = new Dictionary<string, Ingredient>();
             _ordersDone = new List<Order<int>>();
             _ingridientUsedCount = new Dictionary<string, int>();
+            OrdersWaiting = new List<Order<int>>();
+        }
+
+        /// <summary>
+        /// Constructor of DinerKitchen. Kitchen will be with empty recipes book.
+        /// </summary>
+        public DinerKitchen() : this(null)
+        {
+
         }
     }
 }

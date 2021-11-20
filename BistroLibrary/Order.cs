@@ -10,7 +10,7 @@ namespace DinerLibrary
     /// Class of client order.
     /// </summary>
     /// <typeparam name="T">Type of client number field.</typeparam>
-    public class Order<T>
+    public struct Order<T>
     {
         /// <summary>
         /// Client number.
@@ -25,7 +25,7 @@ namespace DinerLibrary
         /// <summary>
         /// Collection of dishes ordered by client.
         /// </summary>
-        public List<Dish> Dishes;
+        public List<Dish> Dishes { get; }
 
         /// <summary>
         /// Costructor of Order.
@@ -41,7 +41,7 @@ namespace DinerLibrary
         }
 
         /// <summary>
-        /// Costructor of Order.
+        /// Costructor of Order with given date.
         /// </summary>
         /// <param name="clientNumber">Client number.</param>
         /// <param name="dishes">Collection of dishes ordered by client.</param>
@@ -51,6 +51,19 @@ namespace DinerLibrary
             Date = date;
         }
 
+        /// <summary>
+        /// Converting Order to String.
+        /// </summary>
+        /// <returns>The order converted to String.</returns>
+        public override string ToString()
+        {
+            StringBuilder info = new StringBuilder($"Client number: {ClientNumber}; Dishes: ");
+            foreach(Dish dish in Dishes)
+            {
+                info.Append(dish);
+            }
+            return info.ToString();
+        }
 
 
     }

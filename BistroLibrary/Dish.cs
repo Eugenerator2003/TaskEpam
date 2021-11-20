@@ -12,6 +12,26 @@ namespace DinerLibrary
     public class Dish
     {
         /// <summary>
+        /// Enumeration of dish types.
+        /// </summary>
+        public enum DishType
+        {
+            /// <summary>
+            /// Dish.
+            /// </summary>
+            Dish,
+            /// <summary>
+            /// Drink type of dish.
+            /// </summary>
+            Drink
+        }
+
+        /// <summary>
+        /// Type of dish.
+        /// </summary>
+        public DishType Type { get; }
+
+        /// <summary>
         /// Name of the dish.
         /// </summary>
         public string Name { get; }
@@ -81,13 +101,24 @@ namespace DinerLibrary
         /// Constructor of Dish.
         /// </summary>
         /// <param name="name">Dish name.</param>
+        /// <param name="type">Dish type.</param>
         /// <param name="portionCount">Count of portion for cooking.</param>
-        public Dish(string name, int portionCount)
+        public Dish(string name, DishType type, int portionCount)
         {
             Name = name;
             PortionCount = portionCount;
             IsDone = false;
             PortionLeft = portionCount;
         }
+
+        /// <summary>
+        /// Convetring the Dish to String.
+        /// </summary>
+        /// <returns>Dish converted to String.</returns>
+        public override string ToString()
+        {
+            return $"{this.Name}, Portion: {this.PortionCount}, Left: {this.PortionLeft};";
+        }
+
     }
 }

@@ -12,17 +12,39 @@ namespace DinerLibrary
     /// </summary>
     public class Diner
     {
-        IJsonIO jsonIO;
+        private IJsonIO jsonIO;
+        private Manager _manager;
+        private DinerKitchen _kitchen;
 
         /// <summary>
-        /// Manager of the diner.
+        /// Getting the tuple of most expensive action type and its cost.
         /// </summary>
-        public Manager Manager { get; }
+        /// <returns>Couple of most expensive action type and its cost.</returns>
+        public (Recipe.CookActionType, double) GetMostExpensiveCookActionType()
+        {
+            return Recipe.MostExpensiveActionType;
+        }
 
         /// <summary>
-        /// Kitchen of the diner.
+        /// Getting the tuple of most cheap action type and its cost.
         /// </summary>
-        public DinerKitchen Kitchen { get; }
+        /// <returns>Couple of most cheap action type and its cost.</returns>
+        public (Recipe.CookActionType, double) GetMostCheapCookActionType()
+        {
+            return Recipe.MostCheapActionType;
+        }
+
+        /// <summary>
+        /// Getting expenses of cooking dishes in given period and by given dish type.
+        /// </summary>
+        /// <param name="startDate">Period start date.</param>
+        /// <param name="endDate">Perios end date.</param>
+        /// <param name="type">Dish type.</param>
+        /// <returns>Expenses of cooking dishes in given period and by given dish type.</returns>
+        public double GetExpensesForPeriod(DateTime startDate, DateTime endDate, Dish.DishType type)
+        {
+            return _manager.GetExpensesForPeriod(startDate, endDate, type);
+        }
 
         /// <summary>
         /// Getting cost of the given cook action type.
@@ -41,7 +63,7 @@ namespace DinerLibrary
         /// <returns>Collection of ingredients with given storage condition type.</returns>
         public List<Ingredient> GetIngredientsByStorageCondition(Ingredient.StorageCondition storageCondition)
         {
-            return Kitchen.GetIngredientsByStorageCondition(storageCondition);
+            return _kitchen.GetIngredientsByStorageCondition(storageCondition);
         }
 
         /// <summary>
@@ -52,16 +74,16 @@ namespace DinerLibrary
         {
             foreach (Ingredient ingredient in ingredients)
             {
-                Kitchen.AddIngredient(ingredient);
+                _kitchen.AddIngredient(ingredient);
             }
         }
 
         /// <summary>
-        /// 
+        /// Cooking in the kitchen for one period of time.
         /// </summary>
         public void Cook()
         {
-            Kitchen.Cook();
+            _kitchen.Cook();
         }
 
         /// <summary>
@@ -72,7 +94,7 @@ namespace DinerLibrary
         /// <returns>Collection of orders which taken in given period.</returns>
         public List<Order<int>> GetOrdersForPeriod(DateTime startTime, DateTime endTime)
         {
-            return Manager.GetOrdersForPeriod(startTime, endTime);
+            return _manager.GetOrdersForPeriod(startTime, endTime);
         }
 
         /// <summary>
@@ -82,7 +104,7 @@ namespace DinerLibrary
         public List<Ingredient> GetIngredients()
         {
             List<Ingredient> ingredients = new List<Ingredient>();
-            ingredients.AddRange(Kitchen.Ingredients.Values);
+            ingredients.AddRange(_kitchen.Ingredients.Values);
             return ingredients;
         }
 
@@ -92,7 +114,7 @@ namespace DinerLibrary
         /// <returns>Dictionary of free appliences.</returns>
         public Dictionary<DinerKitchen.KitchenAppliances, int> GetFreeAppliance()
         {
-            return Kitchen.GettFreeAppliences();
+            return _kitchen.GetFreeAppliences();
         }
 
         /// <summary>
@@ -102,8 +124,8 @@ namespace DinerLibrary
         /// <param name="path">The path to the file in which the information will be saved and loaded.</param>
         public Diner(DinerKitchen kitchen, string path)
         {
-            this.Kitchen = kitchen;
-            Manager = new Manager(this.Kitchen);
+            this._kitchen = kitchen;
+            _manager = new Manager(this._kitchen);
         }
 
         /// <summary>
