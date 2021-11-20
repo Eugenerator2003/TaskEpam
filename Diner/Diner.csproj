@@ -47,6 +47,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\BistroLibrary\DinerLibrary.csproj">
       <Project>{f465d59f-219b-4321-a2a0-46779b9806cb}</Project>
       <Name>DinerLibrary</Name>
@@ -55,9 +58,6 @@
       <Project>{69834cbe-ecf3-46c7-8527-70ad65981141}</Project>
       <Name>JsonIO</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
