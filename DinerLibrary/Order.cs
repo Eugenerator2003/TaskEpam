@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DinerLibrary
@@ -10,6 +11,7 @@ namespace DinerLibrary
     /// Class of client order.
     /// </summary>
     /// <typeparam name="T">Type of client number field.</typeparam>
+    [Serializable]
     public struct Order<T>
     {
         /// <summary>

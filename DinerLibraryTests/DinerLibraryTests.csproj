@@ -95,8 +95,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BistroLibrary\DinerLibrary.csproj">
-      <Project>{F465D59F-219B-4321-A2A0-46779B9806CB}</Project>
+    <ProjectReference Include="..\DinerLibrary\DinerLibrary.csproj">
+      <Project>{f465d59f-219b-4321-a2a0-46779b9806cb}</Project>
       <Name>DinerLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Diner\Diner.csproj">
