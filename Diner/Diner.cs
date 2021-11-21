@@ -22,6 +22,33 @@ namespace DinerLibrary
         public List<(string, Dish.DishType, double)> Menu { get => _manager.Menu; }
 
         /// <summary>
+        /// Getting collection of orders.
+        /// </summary>
+        /// <returns>Collection of orders.</returns>
+        public List<Order<int>> GetOrders()
+        {
+            return _manager.GetOrders();
+        }
+
+        /// <summary>
+        /// Getting collection of waiting orders.
+        /// </summary>
+        /// <returns>Collection of waiting order.s</returns>
+        public List<Order<int>> GetWaintingOrders()
+        {
+            return _kitchen.OrdersWaiting;
+        }
+
+        /// <summary>
+        /// Taking client order.
+        /// </summary>
+        /// <param name="order">Client order.</param>
+        public void TakeOrder(Order<int> order)
+        {
+            _manager.TakeOrder(order);
+        }
+
+        /// <summary>
         /// Getting the tuple of most expensive action type and its cost.
         /// </summary>
         /// <returns>Couple of most expensive action type and its cost.</returns>
@@ -141,6 +168,44 @@ namespace DinerLibrary
         }
 
         /// <summary>
+        /// Saving diner to a json file format.
+        /// </summary>
+        public void Save()
+        {
+            List<Ingredient> ingredients = new List<Ingredient>(_kitchen.Ingredients.Values);
+            _jsonIO.Save(_kitchen.RecipesBook, _manager.GetOrders(), ingredients, _kitchen.Appliances);
+        }
+
+
+
+        /// <summary>
+        /// Loading diner from a json file format.
+        /// </summary>
+        public void Load()
+        {
+            List<Recipe> recipesBook;
+            List<Order<int>> orders;
+            List<Ingredient> ingredients;
+            Dictionary<DinerKitchen.KitchenAppliances, int> appliances;
+            _jsonIO.Load(out recipesBook, out orders, out ingredients, out appliances);
+            _kitchen = new DinerKitchen(recipesBook);
+            _manager = new Manager(_kitchen);
+            foreach(Ingredient ingredient in ingredients)
+            {
+                _kitchen.AddIngredient(ingredient);
+            }
+            foreach(KeyValuePair<DinerKitchen.KitchenAppliances, int> appliance in appliances)
+            {
+                _kitchen.SetKitchenApplianceNumber(appliance.Key, appliance.Value);
+            }
+            _manager = new Manager(_kitchen);
+            foreach(Order<int> order in orders)
+            {
+                _manager.AddOrder(order);
+            }
+        }
+
+        /// <summary>
         /// Constuctor of Diner class.
         /// </summary>
         /// <param name="kitchen">The diner kitchen.</param>
@@ -149,6 +214,43 @@ namespace DinerLibrary
             this._kitchen = kitchen;
             _manager = new Manager(this._kitchen);
             _jsonIO = new JsonIO();
+        }
+
+        /// <summary>
+        /// Converting Diner to String.
+        /// </summary>
+        /// <returns>The diner converted to string.</returns>
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        /// <summary>
+        /// Comparing the diner with the object.
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if </returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            Diner diner = obj as Diner;
+            if (diner == null)
+                return false;
+            bool result = _kitchen.Equals(diner._kitchen) && _manager.Equals(diner._manager);
+            return result;
+        }
+
+        /// <summary>
+        /// Getting hash code of the diner.
+        /// </summary>
+        /// <returns>Hash code of diner.</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = -79238800;
+            hashCode = hashCode * -1521134295 + EqualityComparer<DinerKitchen>.Default.GetHashCode(_kitchen);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<(string, Dish.DishType, double)>>.Default.GetHashCode(Menu);
+            return hashCode;
         }
     }
 }

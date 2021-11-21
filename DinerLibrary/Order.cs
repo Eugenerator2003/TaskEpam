@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DinerLibrary
@@ -10,7 +11,7 @@ namespace DinerLibrary
     /// Class of client order.
     /// </summary>
     /// <typeparam name="T">Type of client number field.</typeparam>
-    public struct Order<T>
+    public class Order<T>
     {
         /// <summary>
         /// Client number.
@@ -46,7 +47,8 @@ namespace DinerLibrary
         /// <param name="clientNumber">Client number.</param>
         /// <param name="dishes">Collection of dishes ordered by client.</param>
         /// <param name="date">Date when order was taken.</param>
-        public Order(T clientNumber, List<Dish> dishes, DateTime date) : this(clientNumber, dishes)
+        [JsonConstructor]
+        public Order(T clientNumber, DateTime date, List<Dish> dishes) : this(clientNumber, dishes)
         {
             Date = date;
         }
@@ -65,6 +67,34 @@ namespace DinerLibrary
             return info.ToString();
         }
 
+        /// <summary>
+        /// Comparing the object with the order.
+        /// </summary>
+        /// <param name="obj">Jbject.</param>
+        /// <returns>True if object is equal to order.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            Order<T> order = obj as Order<T>;
+            if (order == null)
+                return false;
+            bool isEqual = Date == order.Date && ClientNumber.Equals(order.ClientNumber) &&
+                           Dishes.SequenceEqual(order.Dishes);
+            return isEqual;
+        }
 
+        /// <summary>
+        /// Getting hash code of the order.
+        /// </summary>
+        /// <returns>Hash code of the order.</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = 1326377885;
+            hashCode = hashCode * -1521134295 + EqualityComparer<T>.Default.GetHashCode(ClientNumber);
+            hashCode = hashCode * -1521134295 + Date.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Dish>>.Default.GetHashCode(Dishes);
+            return hashCode;
+        }
     }
 }

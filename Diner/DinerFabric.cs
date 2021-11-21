@@ -111,12 +111,12 @@ namespace DinerLibrary
         {
             List<Ingredient> ingredients = new List<Ingredient>()
             {
-                new Ingredient("Beef", Ingredient.StorageCondition.Refrigirator, 10, -15, -5, 25),
-                new Ingredient("Potatoes", Ingredient.StorageCondition.Pantry, 3, -5, 25, 150),
-                new Ingredient("Salt", Ingredient.StorageCondition.Pantry, 0.5, 0, 25, 100),
-                new Ingredient("Pepper", Ingredient.StorageCondition.Pantry, 1.5, 0, 25, 35),
-                new Ingredient("Spices", Ingredient.StorageCondition.Pantry, 3, 0, 25, 20),
-                new Ingredient("Carrot", Ingredient.StorageCondition.Pantry, 2.5, 0, 25, 40),
+                new Ingredient("Beef", 10, Ingredient.StorageCondition.Refrigirator, -15, -5, 25),
+                new Ingredient("Potatoes", 3, Ingredient.StorageCondition.Pantry, -5, 25, 150),
+                new Ingredient("Salt", 0.5, Ingredient.StorageCondition.Pantry, 0, 25, 100),
+                new Ingredient("Pepper", 1.5, Ingredient.StorageCondition.Pantry, 0, 25, 35),
+                new Ingredient("Spices", 3, Ingredient.StorageCondition.Pantry, 0, 25, 20),
+                new Ingredient("Carrot", 2.5, Ingredient.StorageCondition.Pantry, 0, 25, 40),
             };
             return ingredients;
         }

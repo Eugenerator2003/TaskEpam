@@ -144,7 +144,7 @@ namespace DinerLibrary
             /// Time spent on this action.
             /// </summary>
             [JsonIgnore]
-            public double TimeSpend { get; internal set; }
+            public double TimeSpend;
 
             /// <summary>
             /// Constructor of cook action.
@@ -331,7 +331,7 @@ namespace DinerLibrary
             {
                 CookAction action = CurrentAction;
                 action.TimeSpend += 1;
-                CurrentAction = action;
+                CookActions[CurrentActionIndex] = action; 
             }
             else
                 throw new RecipeException($"Current action already ended. {this} - {CurrentActionIndex} - {CurrentAction}");

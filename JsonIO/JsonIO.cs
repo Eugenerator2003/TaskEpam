@@ -99,7 +99,54 @@ namespace DinerLibrary.IO
 
         public void Load(out List<Recipe> recipes, out List<Order<int>> orders, out List<Ingredient> ingredients, out Dictionary<DinerKitchen.KitchenAppliances, int> appliances)
         {
-            throw new NotImplementedException();
+            recipes = LoadRecipes();
+            _LoadOrders(out orders);
+            _LoadIngredient(out ingredients);
+            _LoadApplinance(out appliances);
+        }
+
+        public void _LoadOrders(out List<Order<int>> orders)
+        {
+            orders = new List<Order<int>>();
+            using (StreamReader streamReader = new StreamReader("Orders.json", Encoding.UTF8))
+            {
+                string orderInfo;
+                while ((orderInfo = streamReader.ReadLine()) != null)
+                {
+                    Order<int> order = JsonSerializer.Deserialize<Order<int>>(orderInfo);
+                    orders.Add(order);
+                }
+            }
+        }
+
+        public void _LoadIngredient(out List<Ingredient> ingredients)
+        {
+            ingredients = new List<Ingredient>();
+            using (StreamReader streamReader = new StreamReader("Ingredients.json", Encoding.UTF8))
+            {
+                string ingridientInfo;
+                while ((ingridientInfo = streamReader.ReadLine()) != null)
+                {
+                    Ingredient ingredient = JsonSerializer.Deserialize<Ingredient>(ingridientInfo);
+                    ingredients.Add(ingredient);
+                }
+            }
+        }
+
+        public void _LoadApplinance(out Dictionary<DinerKitchen.KitchenAppliances, int> appliances)
+        {
+            appliances = new Dictionary<DinerKitchen.KitchenAppliances, int>();
+            using (StreamReader streamReader = new StreamReader("Appliances.json", Encoding.UTF8))
+            {
+                string applianceInfo;
+                while ((applianceInfo = streamReader.ReadLine()) != null)
+                {
+                    KeyValuePair<DinerKitchen.KitchenAppliances, int> pair =
+                                JsonSerializer.Deserialize<KeyValuePair<DinerKitchen.KitchenAppliances, int>>(applianceInfo);
+                    appliances.Add(pair.Key, pair.Value);
+                }
+            }
         }
     }
+
 }

@@ -187,7 +187,7 @@ namespace DinerLibrary
                 {
                     _CookDishes(startIndex);
                 }
-                _RemoveDoneOrders();
+                CheckDoneDishes();
             }
             else
                 throw new OrderException("There are no waiting orders");
@@ -199,45 +199,41 @@ namespace DinerLibrary
         /// <param name="startIndex">Index on which the dishes from queue will be cooked.</param>
         private void _CookDishes(int startIndex)
         {
-            List<(Dish, Recipe)> dishesDone = new List<(Dish, Recipe)>();
             for(int i = startIndex; i < _currentDishes.Count; i++)
             {
                 Dish dish = _currentDishes[i].Item1;
                 Recipe recipe = _currentDishes[i].Item2;
                 if (dish.PortionLeft > 0)
                 {
-                    if (recipe.CurrentActionIndex == recipe.CookActions.Count - 1 && recipe.CurrentTimeSpend == recipe.CurrentTimeRequired)
-                    {
-                        _applienecesFree[recipe.CurrentAction.Appliance] += 1;
-                        dish.AddDonePortion();
-                        recipe.GoToFirstAction();
-                        if (dish.PortionLeft == 0)
-                            continue;
-                    }
-                    else if (recipe.CurrentTimeRequired == recipe.CurrentTimeSpend)
-                    {
-                        _applienecesFree[recipe.CurrentAction.Appliance] += 1;
-                        recipe.GoToNextAction();
-                        _applienecesFree[recipe.CurrentAction.Appliance] -= 1;
-                    }
-                    if (recipe.CurrentActionIndex == 0)
+                    if (recipe.CurrentActionIndex == 0 && recipe.CurrentTimeSpend == 0)
                     {
                         _applienecesFree[recipe.CurrentAction.Appliance] -= 1;
                     }
-
-                    try
+                    if (recipe.CurrentTimeSpend < recipe.CurrentTimeRequired)
                     {
                         recipe.CookByRecipe();
                     }
-                    catch
+                    if (recipe.CurrentTimeRequired == recipe.CurrentTimeSpend)
                     {
+                        if (recipe.CurrentActionIndex + 1 != recipe.CookActions.Count 
+                                        && _applienecesFree[recipe.CookActions[recipe.CurrentActionIndex + 1].Appliance] > 0)
+                        {
+                            _applienecesFree[recipe.CurrentAction.Appliance] += 1;
+                            recipe.GoToNextAction();
+                            _applienecesFree[recipe.CurrentAction.Appliance] -= 1;
+                        }
+                        else if (recipe.CurrentActionIndex + 1 == recipe.CookActions.Count)
+                        {
+                            _applienecesFree[recipe.CurrentAction.Appliance] += 1;
+                            dish.AddDonePortion();
+                            recipe.GoToFirstAction();
+                        }
                     }
-
                 }
                 else
                 {
                     dish.SetDone();
-                    dishesDone.Add((dish, recipe));
+                    _currentDishes.Remove((dish, recipe));
                 }
             }
         }
@@ -256,11 +252,15 @@ namespace DinerLibrary
             {
                 foreach(Dish dish in order.Dishes)
                 {
-                    Recipe recipe = (Recipe)_GetRecipeFromBook(dish).Clone();
-                    if (appliancesClone[recipe.CurrentAction.Appliance] > 0)
+                    if (!dish.CookingNow && !dish.IsDone)
                     {
-                        _currentDishes.Add((dish, recipe));
-                        appliancesClone[recipe.CurrentAction.Appliance] -= 1;
+                        Recipe recipe = (Recipe)_GetRecipeFromBook(dish).Clone();
+                        if (appliancesClone[recipe.CurrentAction.Appliance] > 0)
+                        {
+                            dish.SetPrepared();
+                            _currentDishes.Add((dish, recipe));
+                            appliancesClone[recipe.CurrentAction.Appliance] -= 1;
+                        }
                     }
                 }
             }
@@ -269,7 +269,7 @@ namespace DinerLibrary
         /// <summary>
         /// Removing done dishes from queue.
         /// </summary>
-        private void _RemoveDoneOrders()
+        public void CheckDoneDishes()
         {
             List<Order<int>> ordersDone = new List<Order<int>>();
             foreach(Order<int> order in OrdersWaiting)
@@ -291,6 +291,7 @@ namespace DinerLibrary
             foreach (Order<int> order in ordersDone)
             {
                 _ordersDone.Add(order);
+                OrdersWaiting.Remove(order);
             }
         }
 
@@ -569,6 +570,7 @@ namespace DinerLibrary
                 throw new OrderException("Can't set new recipe book while orders are being prepared");
         }
 
+
         /// <summary>
         /// Constructor of DinerKitchen.
         /// </summary>
@@ -598,6 +600,81 @@ namespace DinerLibrary
         public DinerKitchen() : this(null)
         {
 
+        }
+
+        /// <summary>
+        /// Comparing the object with the object.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns>True if the objeect is equal to kitchen.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            DinerKitchen kitchen = obj as DinerKitchen;
+            if (kitchen == null)
+                return false;
+            bool isEqual = RecipesBook.SequenceEqual(kitchen.RecipesBook) &&
+                      OrdersWaiting.SequenceEqual(kitchen.OrdersWaiting);
+            if (isEqual && Ingredients.Count == kitchen.Ingredients.Count)
+            {
+                foreach(string ingredientName in Ingredients.Keys)
+                {
+                    if (kitchen.Ingredients.ContainsKey(ingredientName))
+                    {
+                        if (Ingredients[ingredientName] != kitchen.Ingredients[ingredientName])
+                        {
+                            isEqual = false;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        isEqual = false;
+                        break;
+                    }
+                }
+            }
+            if (isEqual && Appliances.Count == kitchen.Appliances.Count)
+            {
+                foreach(KitchenAppliances appliance in Appliances.Keys)
+                {
+                    if (kitchen.Appliances.ContainsKey(appliance))
+                    {
+                        if (Appliances[appliance] != kitchen.Appliances[appliance])
+                        {
+                            isEqual = false;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        isEqual = false;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                isEqual = false;
+            }
+            return isEqual;
+        }
+
+        /// <summary>
+        /// Getting hash code of the kitchen.
+        /// </summary>
+        /// <returns>Hash code of the kitchen.</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = -1852286578;
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Recipe>>.Default.GetHashCode(RecipesBook);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Dictionary<string, Ingredient>>.Default.GetHashCode(Ingredients);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Dictionary<KitchenAppliances, int>>.Default.GetHashCode(Appliances);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Order<int>>>.Default.GetHashCode(OrdersWaiting);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Dictionary<KitchenAppliances, int>>.Default.GetHashCode(_applienecesFree);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<(Dish, Recipe)>>.Default.GetHashCode(_currentDishes);
+            return hashCode;
         }
     }
 }

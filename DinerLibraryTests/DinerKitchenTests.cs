@@ -75,7 +75,7 @@ namespace DinerLibrary.Tests
         public void GetIngredientsByStorageConditionTest()
         {
             DinerKitchen kitchen = DinerFabric.GetStandartDinerKitchen();
-            Ingredient beef = new Ingredient("Beef", Ingredient.StorageCondition.Refrigirator, 10, -15, -5, 25);
+            Ingredient beef = new Ingredient("Beef", 10, Ingredient.StorageCondition.Refrigirator, -15, -5, 25);
             List<Ingredient> ingredientsPantry = DinerFabric.GetStandartIngridients();
             ingredientsPantry.Remove(beef);
             CollectionAssert.AreEqual(ingredientsPantry, kitchen.GetIngredientsByStorageCondition(Ingredient.StorageCondition.Pantry));
@@ -86,7 +86,6 @@ namespace DinerLibrary.Tests
         {
             Recipe recipeExpected = DinerFabric.GetSteakRecipe();
             DinerKitchen kitchen = new DinerKitchen();
-            Recipe recipe = new Recipe("Steak", Dish.DishType.Dish);
             Ingredient beef = new Ingredient("Beef", Ingredient.StorageCondition.Refrigirator, 10, -15, -5);
             Ingredient pepper = new Ingredient("Pepper", Ingredient.StorageCondition.Pantry, 1.4, 0, 25);
             Ingredient salt = new Ingredient("Salt", Ingredient.StorageCondition.Pantry, 0.7, 0, 25);

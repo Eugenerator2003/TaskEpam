@@ -75,7 +75,7 @@ namespace DinerLibrary
         /// </summary>
         public void SetDone()
         {
-            if (!CookingNow)
+            if (CookingNow)
             {
                 IsDone = true;
                 CookingNow = false;
@@ -89,12 +89,12 @@ namespace DinerLibrary
         /// </summary>
         public void SetPrepared()
         {
-            if (!CookingNow)
+            if (!CookingNow  && !IsDone)
             {
                 CookingNow = true;
             }
             else
-                throw new DishPreparingException("Dish is prepared already");
+                throw new DishPreparingException("Dish is preparing now or is aplready prepared");
         }
 
         /// <summary>
@@ -108,6 +108,7 @@ namespace DinerLibrary
             Name = name;
             PortionCount = portionCount;
             IsDone = false;
+            CookingNow = false;
             PortionLeft = portionCount;
         }
 
@@ -120,5 +121,34 @@ namespace DinerLibrary
             return $"{this.Name}, Portion: {this.PortionCount}, Left: {this.PortionLeft};";
         }
 
+        /// <summary>
+        /// Comparing the object with the dish.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns>True if the object is equal to the dish.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            Dish dish = obj as Dish;
+            if (dish == null)
+                return false;
+            bool isEqual = Type == dish.Type && Name == dish.Name && PortionCount == dish.PortionCount;
+            return isEqual;
+        }
+
+        /// <summary>
+        /// Getting hash code of the dish.
+        /// </summary>
+        /// <returns>Hash code of the dish.</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = 1992234307;
+            hashCode = hashCode * -1521134295 + Type.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + PortionCount.GetHashCode();
+            hashCode = hashCode * -1521134295 + PortionLeft.GetHashCode();
+            return hashCode;
+        }
     }
 }

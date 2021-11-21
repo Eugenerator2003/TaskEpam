@@ -21,6 +21,24 @@ namespace DinerLibrary
         private List<Order<int>> _orders;
 
         /// <summary>
+        /// Adding order to orders collection.
+        /// </summary>
+        /// <param name="order">Client order.</param>
+        public void AddOrder(Order<int> order)
+        {
+            _orders.Add(order);
+        }
+
+        /// <summary>
+        /// Getting collection of orders.
+        /// </summary>
+        /// <returns>Collection of orders.</returns>
+        public List<Order<int>> GetOrders()
+        {
+            return _orders;
+        }
+
+        /// <summary>
         /// Getting done orders from the kitchen.
         /// </summary>
         /// <returns>The list of done orders.</returns>
@@ -42,7 +60,7 @@ namespace DinerLibrary
             }
             catch 
             {
-                throw new OrderException("Order contains unknown dish name.");
+                throw new OrderException("Order can't to add.");
             }
         }
 
@@ -127,6 +145,43 @@ namespace DinerLibrary
             Menu = new List<(string, Dish.DishType, double)>();
             _orders = new List<Order<int>>();
             Renew();
+        }
+
+        /// <summary>
+        /// Converting Manager to String.
+        /// </summary>
+        /// <returns>Manager converted to String.</returns>
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        /// <summary>
+        /// Comparing the manager with the object.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns>True if the object is equal to the manager.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            Manager manager = obj as Manager;
+            if (manager == null)
+                return false;
+            bool isEqual = Menu.SequenceEqual(manager.Menu) && _orders.SequenceEqual(manager._orders);
+            return isEqual;
+        }
+
+        /// <summary>
+        /// Getting hash code of the manager.
+        /// </summary>
+        /// <returns>Hash code of the manager.</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = -1248103559;
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<(string, Dish.DishType, double)>>.Default.GetHashCode(Menu);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Order<int>>>.Default.GetHashCode(_orders);
+            return hashCode;
         }
     }
 }
