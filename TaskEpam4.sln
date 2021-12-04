@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskEpam4", "TaskEpam4.csproj", "{B83EC166-3E36-4D95-BFB6-329039E53625}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task4Library", "Task4\Task4Library.csproj", "{DA259DCC-0988-4A61-8665-364308C5E54F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B83EC166-3E36-4D95-BFB6-329039E53625}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B83EC166-3E36-4D95-BFB6-329039E53625}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B83EC166-3E36-4D95-BFB6-329039E53625}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B83EC166-3E36-4D95-BFB6-329039E53625}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA259DCC-0988-4A61-8665-364308C5E54F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA259DCC-0988-4A61-8665-364308C5E54F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA259DCC-0988-4A61-8665-364308C5E54F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA259DCC-0988-4A61-8665-364308C5E54F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
