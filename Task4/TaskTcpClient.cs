@@ -76,7 +76,7 @@ namespace Task4TcpIp
 
                         }
                     }
-                    System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(100);
                 }
                 else
                 {
