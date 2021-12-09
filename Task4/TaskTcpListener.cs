@@ -19,9 +19,11 @@ namespace Task4TcpIp
         private bool _isSend;
         private int _rows;
         private int _columns;
-        private double[,] _matrix;
-        private double[] _result;
+        private double[][] _matrix;
+        private double[] _solutions;
         private bool _isCalculatingNow;
+        private Queue<int>[] _rowsQueue;
+        private int _currentLineIndex;
 
         /// <summary>
         /// Property of status of calculation the solutions. 
@@ -89,37 +91,58 @@ namespace Task4TcpIp
             {
                 if (!_isSend)
                 {
-                    _rows = matrix.GetLength(0);
-                    _columns = matrix.GetLength(1);
-                    _matrix = matrix;
-                    if (_rows + 1 != _columns)
-                    {
-                        throw new ArgumentException("Matrix of value not suitable for matrix of values of system of linear equations");
-                    }
-
                     while (server.Pending())
                     {
                         clients.Add(server.AcceptTcpClient());
                     }
-                    commutationArray = new bool[clients.Count];
-                    for (int i = 0; i < commutationArray.Length; i++)
-                    {
-                        commutationArray[i] = true;
-                    }
-
                     if (clients.Count > 0)
                     {
+                        _rows = matrix.GetLength(0);
+                        _columns = matrix.GetLength(1);
+                        if (_rows + 1 != _columns)
+                        {
+                            throw new ArgumentException("Matrix of value not suitable for matrix of values of system of linear equations");
+                        }
+                        _matrix = new double[_rows][];
+                        _solutions = new double[_rows];
+                        for (int i = 0; i < _rows; i++)
+                        {
+                            _matrix[i] = new double[_columns];
+                            for (int j = 0; j < _columns; j++)
+                            {
+                                _matrix[i][j] = matrix[i, j];
+                            }
+                        }
                         _isSend = true;
                         _isCalculatingNow = true;
+                        commutationArray = new bool[clients.Count];
+                        for (int i = 0; i < commutationArray.Length; i++)
+                        {
+                            commutationArray[i] = true;
+                        }
+                        _rowsQueue = new Queue<int>[clients.Count];
+                        for (int i = 0; i < commutationArray.Length; i++)
+                        {
+                            _rowsQueue[i] = new Queue<int>();
+                        }
+                        _currentLineIndex = 1;
+                    }
+                    else
+                    {
+                        System.Threading.Thread.Sleep(500);
                     }
                 }
-                _SendingData();
-                _ReceivingData();
+                else
+                {
+                    _SendingData();
+                    System.Threading.Thread.Sleep(500);
+                    _ReceivingData();
+                }
             }
         }
 
         /// <summary>
-        /// Sending data from connected clients.
+        /// Sending data to connected clients.
         /// </summary>
         private void _SendingData()
         {
@@ -130,15 +153,49 @@ namespace Task4TcpIp
                     return;
                 }
             }
+            int clientIndex = 0;
+            for(int j = _currentLineIndex; j < _rows; j++)
+            {
+                StringBuilder info = new StringBuilder();
+                info.Append(DataParse.ArrayDoubleToString(_matrix[j - 1]));
+                info.Append(' ');
+                info.Append(DataParse.ArrayDoubleToString(_matrix[j]));
+                info.Append(';');
+                NetworkStream stream = clients[clientIndex].GetStream();
+                byte[] data = Encoding.Unicode.GetBytes(info.ToString());
+                stream.Write(data, 0, data.Length);
+                _rowsQueue[clientIndex].Enqueue(j);
+                clientIndex++;
+                if (clientIndex == clients.Count)
+                    clientIndex = 0;
+            }
             for(int i = 0; i < commutationArray.Length; i++)
             {
-                if (commutationArray[i])
+                commutationArray[i] = false;
+            }
+            _currentLineIndex++;
+            if (_currentLineIndex == _matrix.Length)
+            {
+                for (int i = _rows - 1; i >= 0; i--)
                 {
-                    NetworkStream stream = clients[i].GetStream();
-                    byte[] data = Encoding.Unicode.GetBytes(DataParse.MatrixDoubleToString(_matrix));
-                    stream.Write(data, 0, data.Length);
-                    commutationArray[i] = false;
+                    _solutions[i] = _matrix[i][_rows] / _matrix[i][i];
+                    for (int c = _rows - 1; c > i; c--)
+                    {
+                        _solutions[i] -= _matrix[i][c] * _solutions[c] / _matrix[i][i];
+                    }
                 }
+                _isCalculatingNow = false;
+                IsCalculated = true;
+                for(int i = 0; i < commutationArray.Length; i++)
+                {
+                    commutationArray[i] = true;
+                    NetworkStream stream = clients[i].GetStream();
+                    byte[] data = Encoding.Unicode.GetBytes("END");
+                    stream.Write(data, 0, data.Length);
+                }
+                clients.Clear();
+                commutationArray = null;
+                _rowsQueue = null;
             }
         }
 
@@ -162,10 +219,15 @@ namespace Task4TcpIp
                             dataString.Append(Encoding.Unicode.GetString(data, 0, bytes));
                         }
                         while (stream.DataAvailable);
-                        _result = DataParse.StringToArrayDouble(dataString.ToString());
-                        commutationArray[i] = true;
-                        IsCalculated = true;
-                        _isCalculatingNow = false;
+                        List<string> results = new List<string>(dataString.ToString().Split(';'));
+                        foreach(string result in results)
+                        {
+                            _matrix[_rowsQueue[i].Dequeue()] = DataParse.StringToArrayDouble(result);
+                        }
+                        if (_rowsQueue[i].Count == 0)
+                        {
+                            commutationArray[i] = true;
+                        }    
                     }
                 }
             }
@@ -175,7 +237,14 @@ namespace Task4TcpIp
         /// Getting array of solutions of system.
         /// </summary>
         /// <returns>Array of solutions.</returns>
-        public double[] GetResult() => _result;
+        public double[] GetResult()
+        {
+            if (!IsCalculated)
+            {
+                throw new Exception("Can't get array of solution. It's calculating now");
+            }
+            return _solutions;
+        }
 
     }
 }

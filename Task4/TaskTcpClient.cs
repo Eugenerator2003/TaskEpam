@@ -31,26 +31,21 @@ namespace Task4TcpIp
         public string ServerIp { get; }
 
         /// <summary>
-        /// Delegate for processing data receiving from server.
-        /// </summary>
-        /// <param name="matrix"></param>
-        /// <returns></returns>
-        protected delegate double[] Calculate(double[,] matrix);
-        /// <summary>
         /// Event for processing data receiving from server.
         /// </summary>
-        protected event Calculate _calculationMethod;
+        public event GaussMethod.CalculationMethod _calculationMethod;
 
         /// <summary>
         /// Constructor of TaskTcpClient.
         /// </summary>
         /// <param name="serverPort">Port of server which connected client.</param>
         /// <param name="serverIp">Ip of server which connected client.</param>
-        public TaskTcpClient(int serverPort, string serverIp)
+        /// <param name="method">Method of calculation</param>
+        public TaskTcpClient(int serverPort, string serverIp, GaussMethod.CalculationMethod method)
         {
             ServerPort = serverPort;
             ServerIp = serverIp;
-            _calculationMethod += matrix => GaussMethod.Solve(matrix);
+            _calculationMethod += method;
             dataString = new List<string>();
         }
 
@@ -76,7 +71,6 @@ namespace Task4TcpIp
 
                         }
                     }
-                    System.Threading.Thread.Sleep(100);
                 }
                 else
                 {
@@ -86,6 +80,7 @@ namespace Task4TcpIp
                         _SendingData();
                     }
                 }
+                System.Threading.Thread.Sleep(500);
             }
         }
 
@@ -100,8 +95,15 @@ namespace Task4TcpIp
             {
                 int bytes = stream.Read(data, 0, data.Length);
                 response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                System.Threading.Thread.Sleep(100);
             }
-            dataString.Add(response.ToString());
+            if (response.Length > 0)
+            {
+                foreach(string values in response.ToString().Split(';'))
+                {
+                    dataString.Add(values);
+                }
+            }
         }
 
         /// <summary>
@@ -109,12 +111,24 @@ namespace Task4TcpIp
         /// </summary>
         private void _SendingData()
         {
-            string currentData = dataString[0];
-            double[,] matrix = DataParse.StringToMatrixDouble(currentData);
-            this.dataString.Remove(currentData);
-            byte[] data = Encoding.Unicode.GetBytes(DataParse.ArrayDoubleToString(_calculationMethod.Invoke(matrix)));
-            stream.Write(data, 0, data.Length);
-            _isEnded = true;
+            while (dataString.Count > 0)
+            {
+                if (dataString[0] == "END")
+                {
+                    _isEnded = true;
+                    break;
+                }
+                string currentStringData = dataString[0];
+                (double[], double[]) dataValues = DataParse.GettedStringToArrays(currentStringData);
+                this.dataString.Remove(currentStringData);
+                double[] result = _calculationMethod.Invoke(dataValues.Item1, dataValues.Item2);
+                byte[] data = Encoding.Unicode.GetBytes(DataParse.ArrayDoubleToString(result) + ";");
+                
+                NetworkStream stream = client.GetStream();
+                stream.Write(data, 0, data.Length);
+            }
+            //byte[] data = Encoding.Unicode.GetBytes(DataParse.ArrayDoubleToString(_calculationMethod.Invoke(matrix)));
+            //stream.Write(data, 0, data.Length);
         }
     }
 }

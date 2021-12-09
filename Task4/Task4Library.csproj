@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="DataParse.cs" />
     <Compile Include="GaussMethod.cs" />
+    <Compile Include="GaussMethodDistributed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskTcpClient.cs" />
     <Compile Include="TaskTcpListener.cs" />

@@ -67,6 +67,30 @@ namespace Task4TcpIp
             }
             return values.ToArray();
         }
+        
+        public static (double[], double[]) GettedStringToArrays(string line)
+        {
+            List<double> values = new List<double>();
+            foreach (string word in line.Split(' '))
+            {
+                if (Double.TryParse(word, out double value))
+                {
+                    values.Add(value);
+                }
+                else
+                    if (word != "")
+                        throw new ArgumentException("Can't convert string to double array. Invalid data");
+            }
+            int len = values.Count / 2;
+            double[] headiingLine = new double[len];
+            double[] currentLine = new double[len];
+            for(int i = 0; i < len; i++)
+            {
+                headiingLine[i] = values[i];
+                currentLine[i] = values[i + len];
+            }
+            return (headiingLine, currentLine);
+        }
 
         /// <summary>
         /// Convering from string to two-dimensional array of double.
@@ -84,18 +108,23 @@ namespace Task4TcpIp
                 }
                 else
                     if (word != "")
-                        throw new ArgumentException($"Can't convert string to double array. Invalid data {values.Count}");
+                        throw new ArgumentException($"Can't convert string data to double type");
             }
-            int row = (int)values[0];
-            double[,] result = new double[row, row + 1];
-            for(int i = 0; i < row; i++)
+            if (values.Count > 2)
             {
-                for(int j = 0; j < row + 1; j++)
+                int row = (int)values[0];
+                double[,] result = new double[row, row + 1];
+                for (int i = 0; i < row; i++)
                 {
-                    result[i, j] = values[1 + i * (row + 1) + j];
+                    for (int j = 0; j < row + 1; j++)
+                    {
+                        result[i, j] = values[1 + i * (row + 1) + j];
+                    }
                 }
+                return result;
             }
-            return result;
+            else
+                throw new ArgumentException("Can't parse from string to matrix of double");
         }
     }
 }

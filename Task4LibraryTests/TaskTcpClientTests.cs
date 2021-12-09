@@ -15,10 +15,10 @@ namespace Task4TcpIp.Tests
         [TestMethod()]
         public void StartTest()
         {
-            TaskTcpClient client = new TaskTcpClient(8005, "127.0.0.1");
+            TaskTcpClient client = new TaskTcpClient(8005, "127.0.0.1", GaussMethod.Calculate);
             TaskTcpListener listener = new TaskTcpListener(8005, "127.0.0.1");
             Random random = new Random(DateTime.Now.DayOfYear + DateTime.Now.Second);
-            int rows = 20;
+            int rows = 3;
             int columns = rows + 1;
             double[,] matrix = new double[rows, columns];
             for (int i = 0; i < rows; i++)
@@ -28,8 +28,10 @@ namespace Task4TcpIp.Tests
                     matrix[i, j] = random.Next(1, 100);
                 }
             }
-            Task.Run(() => client.Start());
             Task.Run(() => listener.Start(matrix));
+            Task.Run(() => client.Start());
+            //listener.Start(matrix);
+            //client.Start();
 
             while (!listener.IsCalculated) ;
             double[] expected = GaussMethod.Solve(matrix);
