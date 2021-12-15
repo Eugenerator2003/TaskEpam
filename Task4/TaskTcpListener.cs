@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Task4TcpIp
 {
@@ -13,10 +14,10 @@ namespace Task4TcpIp
     /// </summary>
     public class TaskTcpListener
     {
-        TcpListener server;
+        int _ttl = 10;
+        TcpListener listener;
         List<TcpClient> clients;
         bool[] commutationArray;
-        private bool _isSend;
         private int _rows;
         private int _columns;
         private double[][] _matrix;
@@ -51,32 +52,10 @@ namespace Task4TcpIp
             Ip = ip;
             IsCalculated = false;
             _isCalculatingNow = false;
-            _isSend = false;
             IPAddress ipAddr = IPAddress.Parse(Ip);
-            server = new TcpListener(ipAddr, Port);
+            listener = new TcpListener(ipAddr, Port);
             clients = new List<TcpClient>();
-            server.Start();
-        }
-
-        /// <summary>
-        /// Renewing connection with clients.
-        /// </summary>
-        public void RenewConnection()
-        {
-            if (!_isCalculatingNow)
-            {
-                while (server.Pending())
-                {
-                    clients.Add(server.AcceptTcpClient());
-                }
-                commutationArray = new bool[clients.Count];
-                for (int i = 0; i < commutationArray.Length; i++)
-                {
-                    commutationArray[i] = true;
-                }
-            }
-            else
-                throw new Exception("Server can't renew connections. It's calculating now");
+            listener.Start();
         }
 
         /// <summary>
@@ -85,152 +64,166 @@ namespace Task4TcpIp
         /// <param name="matrix"></param>
         public void Start(double[,] matrix)
         {
-            
-            IsCalculated = false;
-            while (!IsCalculated)
+            _SetMatrix(matrix);
+            _Connect();
+            _Calculate();            
+        }
+
+        /// <summary>
+        /// Setting the given matrix.
+        /// </summary>
+        /// <param name="matrix">The given matrix.</param>
+        private void _SetMatrix(double[,] matrix)
+        {
+            _rows = matrix.GetLength(0);
+            _columns = matrix.GetLength(1);
+            if (_rows + 1 != _columns)
             {
-                if (!_isSend)
+                throw new ArgumentException("Matrix of value not suitable for matrix of values of system of linear equations");
+            }
+            _matrix = new double[_rows][];
+            _solutions = new double[_rows];
+            for (int i = 0; i < _rows; i++)
+            {
+                _matrix[i] = new double[_columns];
+                for (int j = 0; j < _columns; j++)
                 {
-                    while (server.Pending())
-                    {
-                        clients.Add(server.AcceptTcpClient());
-                    }
-                    if (clients.Count > 0)
-                    {
-                        _rows = matrix.GetLength(0);
-                        _columns = matrix.GetLength(1);
-                        if (_rows + 1 != _columns)
-                        {
-                            throw new ArgumentException("Matrix of value not suitable for matrix of values of system of linear equations");
-                        }
-                        _matrix = new double[_rows][];
-                        _solutions = new double[_rows];
-                        for (int i = 0; i < _rows; i++)
-                        {
-                            _matrix[i] = new double[_columns];
-                            for (int j = 0; j < _columns; j++)
-                            {
-                                _matrix[i][j] = matrix[i, j];
-                            }
-                        }
-                        _isSend = true;
-                        _isCalculatingNow = true;
-                        commutationArray = new bool[clients.Count];
-                        for (int i = 0; i < commutationArray.Length; i++)
-                        {
-                            commutationArray[i] = true;
-                        }
-                        _rowsQueue = new Queue<int>[clients.Count];
-                        for (int i = 0; i < commutationArray.Length; i++)
-                        {
-                            _rowsQueue[i] = new Queue<int>();
-                        }
-                        _currentLineIndex = 1;
-                    }
-                    else
-                    {
-                        System.Threading.Thread.Sleep(500);
-                    }
+                    _matrix[i][j] = matrix[i, j];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Connection with clients.
+        /// </summary>
+        private void _Connect()
+        {
+            int failCount = 0;
+            while(failCount < _ttl)
+            {
+                while(listener.Pending())
+                {
+                    clients.Add(listener.AcceptTcpClient());
+                }
+                if (clients.Count > 0)
+                {
+                    break;
                 }
                 else
                 {
-                    _SendingData();
-                    System.Threading.Thread.Sleep(500);
-                    _ReceivingData();
+                    failCount++;
+                    Thread.Sleep(125);
                 }
+            }
+            if (failCount == _ttl)
+                throw new Exception("Can't start solving. There no tcp client");
+            commutationArray = new bool[clients.Count];
+            _rowsQueue = new Queue<int>[clients.Count];
+            for(int i = 0; i < commutationArray.Length; i++)
+            {
+                commutationArray[i] = true;
+                _rowsQueue[i] = new Queue<int>();
             }
         }
 
         /// <summary>
-        /// Sending data to connected clients.
+        /// Calculation the solutions of matrix.
         /// </summary>
-        private void _SendingData()
+        private void _Calculate()
         {
-            foreach(bool flag in commutationArray)
+            while (_currentLineIndex < _rows)
             {
-                if (!flag)
+                _SendData();
+                _ReceiveData();
+            }
+            _SayEnd();
+            for (int i = _rows - 1; i >= 0; i--)
+            {
+                _solutions[i] = _matrix[i][_rows] / _matrix[i][i];
+                for (int c = _rows - 1; c > i; c--)
                 {
-                    return;
+                    _solutions[i] -= _matrix[i][c] * _solutions[c] / _matrix[i][i];
                 }
             }
-            int clientIndex = 0;
-            for(int j = _currentLineIndex; j < _rows; j++)
+            IsCalculated = true;
+        }
+
+        /// <summary>
+        /// Sending data to clients.
+        /// </summary>
+        private void _SendData()
+        {
+            if (commutationArray.All(elem => elem == true))
             {
-                StringBuilder info = new StringBuilder();
-                info.Append(DataParse.ArrayDoubleToString(_matrix[j - 1]));
-                info.Append(' ');
-                info.Append(DataParse.ArrayDoubleToString(_matrix[j]));
-                info.Append(';');
-                NetworkStream stream = clients[clientIndex].GetStream();
-                byte[] data = Encoding.Unicode.GetBytes(info.ToString());
-                stream.Write(data, 0, data.Length);
-                _rowsQueue[clientIndex].Enqueue(j);
-                clientIndex++;
-                if (clientIndex == clients.Count)
-                    clientIndex = 0;
-            }
-            for(int i = 0; i < commutationArray.Length; i++)
-            {
-                commutationArray[i] = false;
-            }
-            _currentLineIndex++;
-            if (_currentLineIndex == _matrix.Length)
-            {
-                for (int i = _rows - 1; i >= 0; i--)
+                int countClients = 0;
+                for(int i = _currentLineIndex + 1; i < _rows; i++)
                 {
-                    _solutions[i] = _matrix[i][_rows] / _matrix[i][i];
-                    for (int c = _rows - 1; c > i; c--)
+                    StringBuilder dataString = new StringBuilder(DataParse.ArrayDoubleToString(_matrix[_currentLineIndex]));
+                    dataString.Append(";");
+                    dataString.Append(DataParse.ArrayDoubleToString(_matrix[i]));
+                    dataString.Append("|");
+                    byte[] dataByte = Encoding.Unicode.GetBytes(dataString.ToString());
+                    NetworkStream stream = clients[countClients].GetStream();
+                    stream.Write(dataByte, 0, dataByte.Length);
+                    _rowsQueue[countClients].Enqueue(i);
+                    commutationArray[countClients] = false;
+                    countClients++;
+                    if (countClients == clients.Count)
                     {
-                        _solutions[i] -= _matrix[i][c] * _solutions[c] / _matrix[i][i];
+                        countClients = 0;
                     }
                 }
-                _isCalculatingNow = false;
-                IsCalculated = true;
-                for(int i = 0; i < commutationArray.Length; i++)
-                {
-                    commutationArray[i] = true;
-                    NetworkStream stream = clients[i].GetStream();
-                    byte[] data = Encoding.Unicode.GetBytes("END");
-                    stream.Write(data, 0, data.Length);
-                }
-                clients.Clear();
-                commutationArray = null;
-                _rowsQueue = null;
+                _currentLineIndex++;
             }
         }
 
         /// <summary>
-        /// Receiving data to connected clients.
+        /// Receiving data from clients.
         /// </summary>
-        private void _ReceivingData()
+        private void _ReceiveData()
         {
-            for(int i = 0; i < commutationArray.Length; i++)
+            while (commutationArray.Any(elem => elem == false))
             {
-                if (!commutationArray[i])
+                for (int i = 0; i < commutationArray.Length; i++)
                 {
-                    NetworkStream stream = clients[i].GetStream();
-                    if (stream.DataAvailable)
+                    if (!commutationArray[i] && clients[i].GetStream().DataAvailable)
                     {
-                        byte[] data = new byte[8192];
+                        byte[] dataByte = new byte[8192];
                         StringBuilder dataString = new StringBuilder();
-                        do
+                        NetworkStream stream = clients[i].GetStream();
+                        while (stream.DataAvailable)
                         {
-                            int bytes = stream.Read(data, 0, data.Length);
-                            dataString.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                            stream.Read(dataByte, 0, dataByte.Length);
+                            dataString.Append(Encoding.Unicode.GetString(dataByte, 0, dataByte.Length));
                         }
-                        while (stream.DataAvailable);
-                        List<string> results = new List<string>(dataString.ToString().Split(';'));
-                        foreach(string result in results)
+                        dataString.Replace("\0", "");
+                        string[] arraysString = dataString.ToString().Split('|');
+                        foreach(string arrayString in arraysString)
                         {
-                            _matrix[_rowsQueue[i].Dequeue()] = DataParse.StringToArrayDouble(result);
+                            if (arrayString.Length > 0)
+                            {
+                                _matrix[_rowsQueue[i].Dequeue()] = DataParse.StringToArrayDouble(arrayString);
+                            }
                         }
-                        if (_rowsQueue[i].Count == 0)
-                        {
-                            commutationArray[i] = true;
-                        }    
+                        commutationArray[i] = true;
                     }
                 }
+                Thread.Sleep(600);
             }
+        }
+
+        /// <summary>
+        /// Notify clients to end the work.
+        /// </summary>
+        private void _SayEnd()
+        {
+            foreach(TcpClient client in clients)
+            {
+                NetworkStream stream = client.GetStream();
+                byte[] data = Encoding.Unicode.GetBytes("END");
+                stream.Write(data, 0, data.Length);
+            }
+            listener.Stop();
         }
 
         /// <summary>

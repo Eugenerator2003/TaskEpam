@@ -10,31 +10,34 @@ using System.Threading.Tasks;
 namespace Task4TcpIp.Tests
 {
     [TestClass()]
-    public class TaskTcpClientTests
+    public class TaskTcpListenerTests
     {
-        [TestMethod()]
-        public void StartTest()
+        [DataTestMethod()]
+        [DataRow(5, 2)]
+        [DataRow(6, 3)]
+        public void SolveTest(int matrixRows, int numOfClients)
         {
-            TaskTcpClient client = new TaskTcpClient(8005, "127.0.0.1", GaussMethod.Calculate);
             TaskTcpListener listener = new TaskTcpListener(8005, "127.0.0.1");
-            Random random = new Random(DateTime.Now.DayOfYear + DateTime.Now.Second);
-            int rows = 3;
-            int columns = rows + 1;
-            double[,] matrix = new double[rows, columns];
-            for (int i = 0; i < rows; i++)
+            Random random = new Random();
+            int columns = matrixRows + 1;
+            double[,] matrix = new double[matrixRows, columns];
+            for (int i = 0; i < matrixRows; i++)
             {
                 for(int j = 0; j < columns; j++)
                 {
                     matrix[i, j] = random.Next(1, 100);
                 }
             }
-            Task.Run(() => listener.Start(matrix));
-            Task.Run(() => client.Start());
-            //listener.Start(matrix);
-            //client.Start();
-
+            for(int i = 0; i < numOfClients; i++)
+            {
+                Task.Run(() => {
+                    TaskTcpClient client = new TaskTcpClient(8005, "127.0.0.1", GaussMethod.Calculate);
+                    client.Start();
+                });
+            }   
+            listener.Start(matrix);
             while (!listener.IsCalculated) ;
-            double[] expected = GaussMethod.Solve(matrix);
+            double[] expected = (new GaussMethodDistributed(matrix, 4)).Solve();
             double[] result = listener.GetResult();
             for(int i = 0; i < expected.Length; i++)
             {
